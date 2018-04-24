@@ -17,7 +17,10 @@ Route::get('/', function () {
     echo 'hello world from api';
 });
 
-Route::apiResource('pdfs', 'API\PdfController');
+Route::namespace('API')->group(function () {
+    Route::post('pdfs/store', 'PdfController@storeAllTypes');
+    Route::apiResource('pdfs', 'PdfController', ['except' => ['store']]);
+});
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();

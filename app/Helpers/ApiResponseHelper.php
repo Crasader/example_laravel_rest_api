@@ -21,13 +21,17 @@ class ApiResponseHelper
     }
 
     /**
-     * @param  string|array $data
+     * @param  string $message
+     * @param  string|array|null $data
      * @param  int $status
      * @return JsonResponse
      */
-    public function success($data, int $status = 200) : JsonResponse
+    public function success(string $message, $data = null, int $status = 200) : JsonResponse
     {
-        return response()->json(['data' => $data], $status);
+        return response()->json([
+            'data' => $data,
+            'message' => $message,
+        ], $status);
     }
 
     /**
@@ -38,13 +42,10 @@ class ApiResponseHelper
      */
     public function error(string $message, ?array $data, int $status = 404) : JsonResponse
     {
-        return response()->json(
-            [
-                'data' => $data,
-                'message' => $message,
-            ],
-            $status
-        );
+        return response()->json([
+            'data' => $data,
+            'message' => $message,
+        ], $status);
     }
 
     private function __construct() {}
