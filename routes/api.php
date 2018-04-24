@@ -17,6 +17,8 @@ Route::get('/', function () {
     echo 'hello world from api';
 });
 
+Route::apiResource('pdfs', 'API\PdfController');
+
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
