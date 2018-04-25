@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\API\AbstractApiController;
 use App\Repositories\PdfRepository;
 use App\Services\Pdf\PdfFactory;
+use App\Services\Pdf\PdfDataGetter;
+use App\Exceptions\PdfException;
 
 class PdfController extends AbstractApiController
 {
@@ -31,8 +33,11 @@ class PdfController extends AbstractApiController
      * @param  PdfFactory $pdfFactory
      * @return \Illuminate\Http\Response
      */
-    public function storeAllTypes(Request $request, PdfFactory $pdfFactory)
-    {
+    public function storeAllTypes(
+        Request $request,
+        PdfFactory $pdfFactory,
+        PdfDataGetter $pdfDataGetter
+    ) {
         // TODO: change it after login logic is finished
         $userId = 1;
         $customTexts = $request->only([
@@ -41,10 +46,15 @@ class PdfController extends AbstractApiController
             'text_advanced',
         ]);
 
+        // user object
+        $user = null;
+
+        $pdfDataArray = $pdfDataGetter->get($user, $customTexts);
+
         try {
-            $pdfFactory->createAll($userId, $customTexts);
-        } catch (Exception $e) {
-            return $this->response->error('something went wrong...');
+            $pdfFactory->createAll($userId, $pdfDataArray);
+        } catch (PdfException $e) {
+            return $this->response->error($e->getMessage());
         }
 
         return $this->response->success('Pdfs were successfully created.');

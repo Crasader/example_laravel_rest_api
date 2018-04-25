@@ -6,6 +6,7 @@ use App\Services\Pdf\AbstractPdf;
 use App\Services\Pdf\ShortPdf;
 use App\Services\Pdf\FullPdf;
 use App\Services\Pdf\AdvancedPdf;
+use App\Structs\PdfData;
 
 class PdfFactory
 {
@@ -14,25 +15,18 @@ class PdfFactory
         FullPdf::class,
         AdvancedPdf::class,
     ];
-    private const TEXT_FIELD_PATTERN = 'text_%s';
 
-    public function createAll(int $userId, array $customTexts) : void
+    /**
+     * @param  int $userId
+     * @param  PdfData[] $pdfDataArray
+     * @return void
+     */
+    public function createAll(int $userId, $pdfDataArray) : void
     {
         foreach (self::PDFS as $pdf) {
             if ($pdf instanceof AbstractPdf) {
-                $pdfType = $pdf->getType();
-                $pdf->create($userId, $this->getPdfText($customTexts, $pdfType));
+                $pdf->create($userId, $pdfDataArray);
             }
         }
-    }
-
-    private function getPdfText(array $customTexts, string $pdfType) : string
-    {
-        $field = sprintf(self::TEXT_FIELD_PATTERN, $pdfType);
-        if (array_key_exists($field, $customTexts)) {
-            return $customTexts[$field];
-        }
-
-        return '';
     }
 }

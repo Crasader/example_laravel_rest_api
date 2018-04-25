@@ -3,16 +3,16 @@
 namespace App\Services\Pdf;
 
 use AbstractPdf;
+use App\Constants\PdfTypes;
 
 class ShortPdf extends AbstractPdf
 {
     private const FILENAME_PATTERN = 'short_%d.pdf';
-    private const HTML_TEMPLATE = 'short.blade';
-    private const TYPE = 'short';
+    private const HTML_TEMPLATE = 'pdfs.short';
 
     public function getType() : string
     {
-        return self::TYPE;
+        return PdfTypes::$titles[PdfTypes::SHORT];
     }
 
     protected function getFilename(int $userId) : string

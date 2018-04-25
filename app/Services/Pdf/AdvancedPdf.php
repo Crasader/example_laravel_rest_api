@@ -3,16 +3,16 @@
 namespace App\Services\Pdf;
 
 use AbstractPdf;
+use App\Constants\PdfTypes;
 
 class AdvancedPdf extends AbstractPdf
 {
     private const FILENAME_PATTERN = 'advanced_%d.pdf';
-    private const HTML_TEMPLATE = 'advanced.blade';
-    private const TYPE = 'advanced';
+    private const HTML_TEMPLATE = 'pdfs.advanced';
 
     public function getType() : string
     {
-        return self::TYPE;
+        return PdfTypes::$titles[PdfTypes::ADVANCED];
     }
 
     protected function getFilename(int $userId) : string
