@@ -4,7 +4,6 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Helpers\ApiResponseHelper;
-use App\Repositories\AbstractRepository;
 
 abstract class AbstractApiController extends Controller
 {

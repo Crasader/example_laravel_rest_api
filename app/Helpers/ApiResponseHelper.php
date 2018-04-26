@@ -40,7 +40,7 @@ class ApiResponseHelper
      * @param  int $status
      * @return JsonResponse
      */
-    public function error(string $message, ?array $data, int $status = 404) : JsonResponse
+    public function error(string $message, ?array $data = null, int $status = 404) : JsonResponse
     {
         return response()->json([
             'data' => $data,

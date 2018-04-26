@@ -2,7 +2,7 @@
 
 namespace App\Exceptions;
 
-class PdfException extends Exception
+class PdfException extends \Exception
 {
 
 }

@@ -2,19 +2,21 @@
 
 namespace App\Http\Controllers\API;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use App\Http\Controllers\API\AbstractApiController;
 use App\Repositories\PdfRepository;
 use App\Services\Pdf\PdfFactory;
 use App\Services\Pdf\PdfDataGetter;
 use App\Exceptions\PdfException;
+use App\User;
 
 class PdfController extends AbstractApiController
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return JsonResponse
      */
     public function index(Request $request)
     {
@@ -31,7 +33,8 @@ class PdfController extends AbstractApiController
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  PdfFactory $pdfFactory
-     * @return \Illuminate\Http\Response
+     * @param  PdfDataGetter $pdfDataGetter
+     * @return JsonResponse
      */
     public function storeAllTypes(
         Request $request,
@@ -46,8 +49,9 @@ class PdfController extends AbstractApiController
             'text_advanced',
         ]);
 
-        // user object
-        $user = null;
+        $user = new User();
+        $user->name = 'John Doe';
+        $user->email = 'john.doe@email.com';
 
         $pdfDataArray = $pdfDataGetter->get($user, $customTexts);
 
@@ -63,8 +67,8 @@ class PdfController extends AbstractApiController
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  int $id
+     * @return JsonResponse
      */
     public function show($id)
     {
@@ -82,9 +86,9 @@ class PdfController extends AbstractApiController
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  \Illuminate\Http\Request $request
+     * @param  int $id
+     * @return JsonResponse
      */
     public function update(Request $request, $id)
     {
@@ -102,8 +106,8 @@ class PdfController extends AbstractApiController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  int $id
+     * @return JsonResponse
      */
     public function destroy($id)
     {

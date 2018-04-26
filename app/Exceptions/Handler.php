@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use App\Helpers\ApiResponseHelper;
 
 class Handler extends ExceptionHandler
 {
@@ -48,6 +49,14 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        /*if ($request->isJson() && $exception) {
+            $message = 'Sorry, something went wrong. We are investigating the issue.';
+            $data = null;
+            $code = 500;
+
+            return ApiResponseHelper::getInstance()->error($message, $data, $code);
+        }*/
+
         return parent::render($request, $exception);
     }
 }

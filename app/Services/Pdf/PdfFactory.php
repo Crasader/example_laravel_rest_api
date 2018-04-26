@@ -2,11 +2,8 @@
 
 namespace App\Services\Pdf;
 
-use App\Services\Pdf\AbstractPdf;
-use App\Services\Pdf\ShortPdf;
-use App\Services\Pdf\FullPdf;
-use App\Services\Pdf\AdvancedPdf;
 use App\Structs\PdfData;
+use App\Exceptions\PdfException;
 
 class PdfFactory
 {
@@ -20,10 +17,12 @@ class PdfFactory
      * @param  int $userId
      * @param  PdfData[] $pdfDataArray
      * @return void
+     * @throws PdfException
      */
     public function createAll(int $userId, $pdfDataArray) : void
     {
-        foreach (self::PDFS as $pdf) {
+        foreach (self::PDFS as $pdfClassName) {
+            $pdf = resolve($pdfClassName);
             if ($pdf instanceof AbstractPdf) {
                 $pdf->create($userId, $pdfDataArray);
             }

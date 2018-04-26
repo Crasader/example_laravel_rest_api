@@ -8,14 +8,14 @@ use App\Constants\PdfTypes;
 
 class PdfDataGetter
 {
-    private const TEXT_FIELD_PATTERN = 'text_%s';
+    const TEXT_FIELD_PATTERN = 'text_%s';
 
     /**
      * @param  User $user
-     * @param  string[] $customText
+     * @param  string[] $customTexts
      * @return PdfData[]|array
      */
-    public function get($user, $customText)
+    public function get(User $user, $customTexts)
     {
         $pdfDataArray = [];
         $pdfTypeTitles = $this->getPdfTypeTitles();
@@ -28,14 +28,17 @@ class PdfDataGetter
                 $pdfData->name = $user->name;
                 $pdfData->email = $user->email;
 
-                $pdfDataArray[$fieldName] = $pdfData;
+                $pdfDataArray[$pdfType] = $pdfData;
             }
         }
 
         return $pdfDataArray;
     }
 
-    private function getPdfTypeTitles() : string[]
+    /**
+     * @return string[]
+     */
+    private function getPdfTypeTitles()
     {
         return [
             PdfTypes::$titles[PdfTypes::SHORT],

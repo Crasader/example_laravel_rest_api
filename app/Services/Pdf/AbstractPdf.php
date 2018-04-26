@@ -9,7 +9,7 @@ use App\Exceptions\PdfException;
 
 abstract class AbstractPdf
 {
-    private const PDF_DATA_NOT_EXISTS = "PdfData instance doesn't exist for the '%s' pdf type.";
+    const PDF_DATA_NOT_EXISTS = "PdfData instance doesn't exist for the '%s' pdf type.";
 
     private $pdfRendererWrapper;
     private $pdfRepository;

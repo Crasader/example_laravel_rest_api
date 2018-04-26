@@ -2,7 +2,6 @@
 
 namespace App\Services\Pdf;
 
-use AbstractPdf;
 use App\Constants\PdfTypes;
 
 class FullPdf extends AbstractPdf
