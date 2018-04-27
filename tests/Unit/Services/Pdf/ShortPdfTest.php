@@ -4,26 +4,37 @@ namespace Tests\Unit\Services\Pdf;
 
 use App\Constants\PdfTypes;
 use App\Services\Pdf\ShortPdf;
+use App\Structs\PdfData;
 
 class ShortPdfTest extends AbstractPdfTestCase
 {
-    private $pdf;
+    private const FILENAME_PATTERN = 'short_%d.pdf';
+    private const HTML_TEMPLATE = 'pdfs.short';
 
-    public function setUp()
+    protected function getFilename(): string
     {
-        $pdfRendererWrapper = $this->mockPdfRendererWrapper();
-        $pdfRepository = $this->mockPdfRepository();
-
-        $this->pdf = new ShortPdf(
-            $pdfRendererWrapper,
-            $pdfRepository
-        );
+        return sprintf(self::FILENAME_PATTERN, self::USER_ID);
     }
 
-    public function testGetType()
+    protected function getTemplate(): string
     {
-        $response = $this->pdf->getType();
-        $expectedResponse = PdfTypes::$titles[PdfTypes::SHORT];
-        $this->assertEquals($expectedResponse, $response);
+        return self::HTML_TEMPLATE;
+    }
+
+    protected function getPdfData(): PdfData
+    {
+        $pdfDataArray = $this->getPdfDataArray();
+        $pdfData = $pdfDataArray[$this->getPdfTypeTitle()];
+        return $pdfData;
+    }
+
+    protected function getPdfType(): string
+    {
+        return ShortPdf::class;
+    }
+
+    protected function getPdfTypeTitle(): string
+    {
+        return PdfTypes::$titles[PdfTypes::SHORT];
     }
 }

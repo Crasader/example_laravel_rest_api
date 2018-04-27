@@ -3,13 +3,13 @@
 namespace Tests\Unit\Services\Pdf;
 
 use App\Constants\PdfTypes;
-use App\Services\Pdf\FullPdf;
+use App\Services\Pdf\AdvancedPdf;
 use App\Structs\PdfData;
 
-class FullPdfTest extends AbstractPdfTestCase
+class AdvancedPdfTest extends AbstractPdfTestCase
 {
-    private const FILENAME_PATTERN = 'full_%d.pdf';
-    private const HTML_TEMPLATE = 'pdfs.full';
+    private const FILENAME_PATTERN = 'advanced_%d.pdf';
+    private const HTML_TEMPLATE = 'pdfs.advanced';
 
     protected function getFilename(): string
     {
@@ -30,11 +30,11 @@ class FullPdfTest extends AbstractPdfTestCase
 
     protected function getPdfType(): string
     {
-        return FullPdf::class;
+        return AdvancedPdf::class;
     }
 
     protected function getPdfTypeTitle(): string
     {
-        return PdfTypes::$titles[PdfTypes::FULL];
+        return PdfTypes::$titles[PdfTypes::ADVANCED];
     }
 }

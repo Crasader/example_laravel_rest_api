@@ -6,10 +6,11 @@ use App\Helpers\PdfRendererWrapper;
 use App\Repositories\PdfRepository;
 use App\Structs\PdfData;
 use App\Exceptions\PdfException;
+use Illuminate\Support\Facades\Storage;
 
 abstract class AbstractPdf
 {
-    const PDF_DATA_NOT_EXISTS = "PdfData instance doesn't exist for the '%s' pdf type.";
+    private const PDF_DATA_NOT_EXISTS = "PdfData instance doesn't exist for the '%s' pdf type.";
 
     private $pdfRendererWrapper;
     private $pdfRepository;
@@ -22,12 +23,12 @@ abstract class AbstractPdf
         $this->pdfRepository = $pdfRepository;
     }
 
-
     /**
      * @param  int $userId
      * @param  PdfData[] $pdfDataArray
-     * @throws PdfException
      * @return string
+     * @throws PdfException
+     * @throws \Prettus\Validator\Exceptions\ValidatorException
      */
     public function create(int $userId, $pdfDataArray) : string
     {
