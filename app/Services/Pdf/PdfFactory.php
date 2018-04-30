@@ -9,6 +9,7 @@ use App\Exceptions\PdfException;
 class PdfFactory
 {
     private const PDF_DATA_NOT_EXISTS = "PdfData instance doesn't exist for the '%s' pdf type.";
+    private const PDF_TYPE_NOT_EXISTS = "The requested pdf type with '%d' id doesn't exist.";
 
     private const PDFS = [
         PdfTypes::SHORT => ShortPdf::class,
@@ -31,6 +32,25 @@ class PdfFactory
                 $pdfData = $this->getPdfDataFromArray($type, $pdfDataArray);
                 $pdf->createOrUpdate($userId, $pdfData);
             }
+        }
+    }
+
+    /**
+     * @param int $type
+     * @param int $userId
+     * @param PdfData $pdfData
+     * @throws PdfException
+     * @throws \Prettus\Validator\Exceptions\ValidatorException
+     */
+    public function create(int $type, int $userId, PdfData $pdfData): void
+    {
+        if (!array_key_exists($type, self::PDFS)) {
+            throw new PdfException(sprintf(self::PDF_TYPE_NOT_EXISTS, $type));
+        }
+
+        $pdf = resolve(self::PDFS[$type]);
+        if ($pdf instanceof AbstractPdf) {
+            $pdf->createOrUpdate($userId, $pdfData);
         }
     }
 

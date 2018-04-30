@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Structs\PdfData;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Repositories\PdfRepository;
@@ -10,6 +11,7 @@ use App\Services\Pdf\PdfDataGetter;
 use App\Exceptions\PdfException;
 use Illuminate\Http\Response;
 use Prettus\Validator\Exceptions\ValidatorException;
+use App\Services\Pdf\PdfUpdater;
 use App\User;
 
 class PdfController extends AbstractApiController
@@ -93,19 +95,33 @@ class PdfController extends AbstractApiController
     /**
      * Update the specified resource in storage.
      *
+     * @param PdfUpdater $pdfUpdater
      * @param  \Illuminate\Http\Request $request
      * @param  int $id
      * @return JsonResponse
      */
-    public function update(Request $request, $id)
+    public function update(PdfUpdater $pdfUpdater, Request $request, $id)
     {
-        $text = 'test custom text';
-        $link = 'test link';
-        $values = [
-            'custom_text' => $text,
-            'link' => $link,
-        ];
-        $data = $this->repository->update($values, $id);
+        $text = $request->input('text');
+        $userId = 1;
+        $user = new User;
+        $user->name = 'John Doe';
+        $user->email = 'john.doe@email.com';
+
+        $pdfData = new PdfData;
+        $pdfData->email = $user->email;
+        $pdfData->name = $user->name;
+        $pdfData->text = $text;
+
+        try {
+            $pdfUpdater->update($id, $userId, $pdfData);
+        } catch (PdfException | ValidatorException $e) {
+            return $this->response->error(
+                $e->getMessage(),
+                null,
+                Response::HTTP_UNPROCESSABLE_ENTITY
+            );
+        }
 
         return $this->response->success('The resource was successfully updated.');
     }
