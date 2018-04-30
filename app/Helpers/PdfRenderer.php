@@ -3,8 +3,9 @@
 namespace App\Helpers;
 
 use Dompdf\Dompdf;
+use PDF;
 
-class PdfRendererWrapper
+class PdfRenderer
 {
     /**
      * @param  string $template

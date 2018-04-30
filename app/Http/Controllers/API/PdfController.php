@@ -8,6 +8,8 @@ use App\Repositories\PdfRepository;
 use App\Services\Pdf\PdfFactory;
 use App\Services\Pdf\PdfDataGetter;
 use App\Exceptions\PdfException;
+use Illuminate\Http\Response;
+use Prettus\Validator\Exceptions\ValidatorException;
 use App\User;
 
 class PdfController extends AbstractApiController
@@ -31,10 +33,11 @@ class PdfController extends AbstractApiController
     /**
      * Store newly created pdfs to the storage
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @param  PdfFactory $pdfFactory
      * @param  PdfDataGetter $pdfDataGetter
      * @return JsonResponse
+     * @throws \Prettus\Validator\Exceptions\ValidatorException
      */
     public function storeAllTypes(
         Request $request,
@@ -43,22 +46,26 @@ class PdfController extends AbstractApiController
     ) {
         // TODO: change it after login logic is finished
         $userId = 1;
+        $user = new User();
+        $user->name = 'John Doe';
+        $user->email = 'john.doe@email.com';
+
         $customTexts = $request->only([
             'text_short',
             'text_full',
             'text_advanced',
         ]);
 
-        $user = new User();
-        $user->name = 'John Doe';
-        $user->email = 'john.doe@email.com';
-
         $pdfDataArray = $pdfDataGetter->get($user, $customTexts);
 
         try {
             $pdfFactory->createAll($userId, $pdfDataArray);
-        } catch (PdfException $e) {
-            return $this->response->error($e->getMessage());
+        } catch (PdfException | ValidatorException $e) {
+            return $this->response->error(
+                $e->getMessage(),
+                null,
+                Response::HTTP_UNPROCESSABLE_ENTITY
+            );
         }
 
         return $this->response->success('Pdfs were successfully created.');

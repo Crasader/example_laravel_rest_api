@@ -24,17 +24,17 @@ class AdvancedPdfTest extends AbstractPdfTestCase
     protected function getPdfData(): PdfData
     {
         $pdfDataArray = $this->getPdfDataArray();
-        $pdfData = $pdfDataArray[$this->getPdfTypeTitle()];
+        $pdfData = $pdfDataArray[$this->getPdfType()];
         return $pdfData;
     }
 
-    protected function getPdfType(): string
+    protected function getPdfClass(): string
     {
         return AdvancedPdf::class;
     }
 
-    protected function getPdfTypeTitle(): string
+    protected function getPdfType(): int
     {
-        return PdfTypes::$titles[PdfTypes::ADVANCED];
+        return PdfTypes::ADVANCED;
     }
 }

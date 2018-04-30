@@ -24,17 +24,17 @@ class FullPdfTest extends AbstractPdfTestCase
     protected function getPdfData(): PdfData
     {
         $pdfDataArray = $this->getPdfDataArray();
-        $pdfData = $pdfDataArray[$this->getPdfTypeTitle()];
+        $pdfData = $pdfDataArray[$this->getPdfType()];
         return $pdfData;
     }
 
-    protected function getPdfType(): string
+    protected function getPdfClass(): string
     {
         return FullPdf::class;
     }
 
-    protected function getPdfTypeTitle(): string
+    protected function getPdfType(): int
     {
-        return PdfTypes::$titles[PdfTypes::FULL];
+        return PdfTypes::FULL;
     }
 }

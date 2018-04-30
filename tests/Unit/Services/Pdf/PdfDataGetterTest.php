@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Services\Pdf;
 
+use App\Constants\PdfTypes;
 use Tests\TestCase;
 use App\Services\Pdf\PdfDataGetter;
 use App\User;
@@ -37,7 +38,8 @@ class PdfDataGetterTest extends TestCase
             $this->assertInstanceOf(PdfData::class, $pdfData);
             $this->assertEquals($pdfData->email, $this->user->email);
             $this->assertEquals($pdfData->name, $this->user->name);
-            $fieldName = sprintf(PdfDataGetter::TEXT_FIELD_PATTERN, $pdfType);
+            $title = PdfTypes::$titles[$pdfType];
+            $fieldName = sprintf(PdfDataGetter::TEXT_FIELD_PATTERN, $title);
             $text = $customTexts[$fieldName];
             $this->assertEquals($pdfData->text, $text);
         }

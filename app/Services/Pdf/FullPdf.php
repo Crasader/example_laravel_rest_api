@@ -9,9 +9,9 @@ class FullPdf extends AbstractPdf
     private const FILENAME_PATTERN = 'full_%d.pdf';
     private const HTML_TEMPLATE = 'pdfs.full';
 
-    public function getType() : string
+    public function getType() : int
     {
-        return PdfTypes::$titles[PdfTypes::FULL];
+        return PdfTypes::FULL;
     }
 
     protected function getFilename(int $userId) : string

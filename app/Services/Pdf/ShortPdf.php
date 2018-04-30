@@ -9,9 +9,9 @@ class ShortPdf extends AbstractPdf
     private const FILENAME_PATTERN = 'short_%d.pdf';
     private const HTML_TEMPLATE = 'pdfs.short';
 
-    public function getType() : string
+    public function getType() : int
     {
-        return PdfTypes::$titles[PdfTypes::SHORT];
+        return PdfTypes::SHORT;
     }
 
     protected function getFilename(int $userId) : string

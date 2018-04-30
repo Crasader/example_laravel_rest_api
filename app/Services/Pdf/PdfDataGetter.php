@@ -18,10 +18,10 @@ class PdfDataGetter
     public function get(User $user, $customTexts)
     {
         $pdfDataArray = [];
-        $pdfTypeTitles = $this->getPdfTypeTitles();
 
-        foreach ($pdfTypeTitles as $pdfType) {
-            $fieldName = sprintf(self::TEXT_FIELD_PATTERN, $pdfType);
+        foreach ($this->getPdfTypes() as $pdfType) {
+            $pdfTitle = PdfTypes::$titles[$pdfType];
+            $fieldName = sprintf(self::TEXT_FIELD_PATTERN, $pdfTitle);
             if (array_key_exists($fieldName, $customTexts)) {
                 $pdfData = new PdfData;
                 $pdfData->text = $customTexts[$fieldName];
@@ -36,14 +36,14 @@ class PdfDataGetter
     }
 
     /**
-     * @return string[]
+     * @return int[]
      */
-    private function getPdfTypeTitles()
+    private function getPdfTypes()
     {
         return [
-            PdfTypes::$titles[PdfTypes::SHORT],
-            PdfTypes::$titles[PdfTypes::FULL],
-            PdfTypes::$titles[PdfTypes::ADVANCED],
+            PdfTypes::SHORT,
+            PdfTypes::FULL,
+            PdfTypes::ADVANCED,
         ];
     }
 }

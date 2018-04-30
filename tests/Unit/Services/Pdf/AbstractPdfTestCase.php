@@ -4,10 +4,9 @@ namespace Tests\Unit\Services\Pdf;
 
 use App\Constants\PdfTypes;
 use Tests\TestCase;
-use App\Helpers\PdfRendererWrapper;
+use App\Helpers\PdfRenderer;
 use App\Repositories\PdfRepository;
 use App\Structs\PdfData;
-use App\Exceptions\PdfException;
 use Illuminate\Support\Facades\Storage;
 
 abstract class AbstractPdfTestCase extends TestCase
@@ -20,12 +19,12 @@ abstract class AbstractPdfTestCase extends TestCase
 
     public function setUp()
     {
-        $pdfRendererWrapper = $this->mockPdfRendererWrapper();
+        $pdfRenderer = $this->mockPdfRenderer();
         $pdfRepository = $this->mockPdfRepository();
 
-        $pdfClassName = $this->getPdfType();
+        $pdfClassName = $this->getPdfClass();
         $this->pdf = new $pdfClassName(
-            $pdfRendererWrapper,
+            $pdfRenderer,
             $pdfRepository
         );
     }
@@ -33,17 +32,8 @@ abstract class AbstractPdfTestCase extends TestCase
     public function testGetType()
     {
         $response = $this->pdf->getType();
-        $expectedResponse = $this->getPdfTypeTitle();
+        $expectedResponse = $this->getPdfType();
         $this->assertEquals($expectedResponse, $response);
-    }
-
-    public function testCreate_PdfDataNotExistsException()
-    {
-        $pdfDataArray = $this->getPdfDataArray();
-        unset($pdfDataArray[$this->getPdfTypeTitle()]);
-
-        $this->expectException(PdfException::class);
-        $this->pdf->create(self::USER_ID, $pdfDataArray);
     }
 
     public function testCreate_Correct()
@@ -52,7 +42,7 @@ abstract class AbstractPdfTestCase extends TestCase
             ->once();
 
         $pdfDataArray = $this->getPdfDataArray();
-        $response = $this->pdf->create(self::USER_ID, $pdfDataArray);
+        $response = $this->pdf->create(self::USER_ID, $pdfDataArray[$this->getPdfType()]);
 
         $excepectedResponse = $this->getFilename();
         $this->assertEquals($excepectedResponse, $response);
@@ -61,8 +51,8 @@ abstract class AbstractPdfTestCase extends TestCase
     abstract protected function getFilename(): string;
     abstract protected function getTemplate(): string;
     abstract protected function getPdfData(): PdfData;
-    abstract protected function getPdfType(): string;
-    abstract protected function getPdfTypeTitle(): string;
+    abstract protected function getPdfClass(): string;
+    abstract protected function getPdfType(): int;
 
     protected function getPdfDataArray()
     {
@@ -82,17 +72,17 @@ abstract class AbstractPdfTestCase extends TestCase
         $advancedPdfData->text = 'advanced_custom_text';
 
         $pdfDataArray = [
-            PdfTypes::$titles[PdfTypes::SHORT] => $shortPdfData,
-            PdfTypes::$titles[PdfTypes::FULL] => $fullPdfData,
-            PdfTypes::$titles[PdfTypes::ADVANCED] => $advancedPdfData,
+            PdfTypes::SHORT => $shortPdfData,
+            PdfTypes::FULL => $fullPdfData,
+            PdfTypes::ADVANCED => $advancedPdfData,
         ];
 
         return $pdfDataArray;
     }
 
-    protected function mockPdfRendererWrapper()
+    protected function mockPdfRenderer()
     {
-        $mockedClass = \Mockery::mock(PdfRendererWrapper::class);
+        $mockedClass = \Mockery::mock(PdfRenderer::class);
         $mockedClass->shouldReceive('render')
             ->with($this->getTemplate(), $this->getPdfData()->toArray())
             ->andReturn(new \Dompdf\Dompdf);
@@ -106,6 +96,7 @@ abstract class AbstractPdfTestCase extends TestCase
             'user_id' => self::USER_ID,
             'custom_text' => $this->getPdfData()->text,
             'link' => $this->getFilename(),
+            'type' => $this->getPdfType(),
         ];
 
         $mockedClass = \Mockery::mock(PdfRepository::class);

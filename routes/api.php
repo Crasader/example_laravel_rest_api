@@ -18,7 +18,7 @@ Route::get('/', function () {
 });
 
 Route::namespace('API')->group(function () {
-    Route::post('pdfs/store', 'PdfController@storeAllTypes');
+    Route::post('pdfs/all', 'PdfController@storeAllTypes');
     Route::apiResource('pdfs', 'PdfController', ['except' => ['store']]);
 });
 

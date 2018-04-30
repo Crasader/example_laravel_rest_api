@@ -9,9 +9,9 @@ class AdvancedPdf extends AbstractPdf
     private const FILENAME_PATTERN = 'advanced_%d.pdf';
     private const HTML_TEMPLATE = 'pdfs.advanced';
 
-    public function getType() : string
+    public function getType() : int
     {
-        return PdfTypes::$titles[PdfTypes::ADVANCED];
+        return PdfTypes::ADVANCED;
     }
 
     protected function getFilename(int $userId) : string

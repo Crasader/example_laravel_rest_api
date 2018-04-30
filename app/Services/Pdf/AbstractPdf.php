@@ -2,44 +2,35 @@
 
 namespace App\Services\Pdf;
 
-use App\Helpers\PdfRendererWrapper;
+use App\Helpers\PdfRenderer;
 use App\Repositories\PdfRepository;
 use App\Structs\PdfData;
-use App\Exceptions\PdfException;
+use App\Constants\PdfTypes;
 use Illuminate\Support\Facades\Storage;
 
 abstract class AbstractPdf
 {
-    private const PDF_DATA_NOT_EXISTS = "PdfData instance doesn't exist for the '%s' pdf type.";
-
-    private $pdfRendererWrapper;
+    private $pdfRenderer;
     private $pdfRepository;
 
     public function __construct(
-        PdfRendererWrapper $pdfRendererWrapper,
+        PdfRenderer $pdfRenderer,
         PdfRepository $pdfRepository
     ) {
-        $this->pdfRendererWrapper = $pdfRendererWrapper;
+        $this->pdfRenderer = $pdfRenderer;
         $this->pdfRepository = $pdfRepository;
     }
 
     /**
      * @param  int $userId
-     * @param  PdfData[] $pdfDataArray
+     * @param  PdfData $pdfData
      * @return string
-     * @throws PdfException
      * @throws \Prettus\Validator\Exceptions\ValidatorException
      */
-    public function create(int $userId, $pdfDataArray) : string
+    public function create(int $userId, PdfData $pdfData) : string
     {
-        $pdfType = $this->getType();
-        if (!array_key_exists($pdfType, $pdfDataArray)) {
-            throw new PdfException(sprintf(self::PDF_DATA_NOT_EXISTS, $pdfType));
-        }
-
         $template = $this->getTemplate();
-        $pdfData = $pdfDataArray[$pdfType];
-        $pdf = $this->pdfRendererWrapper->render($template, $pdfData->toArray());
+        $pdf = $this->pdfRenderer->render($template, $pdfData->toArray());
 
         $filename = $this->getFilename($userId);
         Storage::put($filename, $pdf->output());
@@ -48,13 +39,14 @@ abstract class AbstractPdf
             'user_id' => $userId,
             'custom_text' => $pdfData->text,
             'link' => $filename,
+            'type' => $this->getType(),
         ];
         $this->pdfRepository->create($values);
 
         return $filename;
     }
 
-    abstract public function getType() : string;
+    abstract public function getType() : int;
     abstract protected function getFilename(int $userId) : string;
     abstract protected function getTemplate() : string;
 }

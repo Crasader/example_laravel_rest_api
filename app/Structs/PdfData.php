@@ -15,7 +15,7 @@ class PdfData implements Arrayable
         return [
             'name' => $this->name,
             'email' => $this->email,
-            'name' => $this->text,
+            'text' => $this->text,
         ];
     }
 }
