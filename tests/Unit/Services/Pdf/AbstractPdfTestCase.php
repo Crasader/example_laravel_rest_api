@@ -42,7 +42,7 @@ abstract class AbstractPdfTestCase extends TestCase
             ->once();
 
         $pdfDataArray = $this->getPdfDataArray();
-        $response = $this->pdf->create(self::USER_ID, $pdfDataArray[$this->getPdfType()]);
+        $response = $this->pdf->createOrUpdate(self::USER_ID, $pdfDataArray[$this->getPdfType()]);
 
         $excepectedResponse = $this->getFilename();
         $this->assertEquals($excepectedResponse, $response);
@@ -92,16 +92,18 @@ abstract class AbstractPdfTestCase extends TestCase
 
     protected function mockPdfRepository()
     {
-        $values = [
+        $attributes = [
             'user_id' => self::USER_ID,
+            'type' => $this->getPdfType(),
+        ];
+        $values = [
             'custom_text' => $this->getPdfData()->text,
             'link' => $this->getFilename(),
-            'type' => $this->getPdfType(),
         ];
 
         $mockedClass = \Mockery::mock(PdfRepository::class);
-        $mockedClass->shouldReceive('create')
-            ->with($values);
+        $mockedClass->shouldReceive('updateOrCreate')
+            ->with($attributes, $values);
 
         return $mockedClass;
     }

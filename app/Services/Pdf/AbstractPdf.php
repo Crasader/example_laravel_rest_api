@@ -27,7 +27,7 @@ abstract class AbstractPdf
      * @return string
      * @throws \Prettus\Validator\Exceptions\ValidatorException
      */
-    public function create(int $userId, PdfData $pdfData) : string
+    public function createOrUpdate(int $userId, PdfData $pdfData) : string
     {
         $template = $this->getTemplate();
         $pdf = $this->pdfRenderer->render($template, $pdfData->toArray());
@@ -35,13 +35,15 @@ abstract class AbstractPdf
         $filename = $this->getFilename($userId);
         Storage::put($filename, $pdf->output());
 
-        $values = [
+        $attributes = [
             'user_id' => $userId,
-            'custom_text' => $pdfData->text,
-            'link' => $filename,
             'type' => $this->getType(),
         ];
-        $this->pdfRepository->create($values);
+        $values = [
+            'custom_text' => $pdfData->text,
+            'link' => $filename,
+        ];
+        $this->pdfRepository->updateOrCreate($attributes, $values);
 
         return $filename;
     }

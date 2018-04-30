@@ -29,7 +29,7 @@ class PdfFactory
             $pdf = resolve($className);
             if ($pdf instanceof AbstractPdf) {
                 $pdfData = $this->getPdfDataFromArray($type, $pdfDataArray);
-                $pdf->create($userId, $pdfData);
+                $pdf->createOrUpdate($userId, $pdfData);
             }
         }
     }
