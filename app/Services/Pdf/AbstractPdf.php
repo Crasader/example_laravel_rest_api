@@ -5,7 +5,6 @@ namespace App\Services\Pdf;
 use App\Helpers\PdfRenderer;
 use App\Repositories\PdfRepository;
 use App\Structs\PdfData;
-use App\Constants\PdfTypes;
 use Illuminate\Support\Facades\Storage;
 
 abstract class AbstractPdf
@@ -42,7 +41,7 @@ abstract class AbstractPdf
         $values = [
             'custom_text' => $pdfData->text,
             'filename' => $filename,
-            'link' => $filename,
+            'link' => Storage::url($filename),
         ];
         $this->pdfRepository->updateOrCreate($attributes, $values);
 

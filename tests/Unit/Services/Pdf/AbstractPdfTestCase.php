@@ -19,6 +19,8 @@ abstract class AbstractPdfTestCase extends TestCase
 
     public function setUp()
     {
+        parent::setUp();
+
         $pdfRenderer = $this->mockPdfRenderer();
         $pdfRepository = $this->mockPdfRepository();
 
@@ -39,6 +41,12 @@ abstract class AbstractPdfTestCase extends TestCase
     public function testCreate_Correct()
     {
         Storage::shouldReceive('put')
+            ->once();
+
+        $url = $this->getStorageUrl($this->getFilename());
+        Storage::shouldReceive('url')
+            ->with($this->getFilename())
+            ->andReturn($url)
             ->once();
 
         $pdfDataArray = $this->getPdfDataArray();
@@ -99,7 +107,7 @@ abstract class AbstractPdfTestCase extends TestCase
         $values = [
             'custom_text' => $this->getPdfData()->text,
             'filename' => $this->getFilename(),
-            'link' => $this->getFilename(),
+            'link' => $this->getStorageUrl($this->getFilename()),
         ];
 
         $mockedClass = \Mockery::mock(PdfRepository::class);
@@ -107,5 +115,10 @@ abstract class AbstractPdfTestCase extends TestCase
             ->with($attributes, $values);
 
         return $mockedClass;
+    }
+
+    private function getStorageUrl(string $filename): string
+    {
+        return sprintf('%s/%s', config('filesystems.disks.public.url'), $filename);
     }
 }
