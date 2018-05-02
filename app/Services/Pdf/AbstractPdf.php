@@ -41,6 +41,7 @@ abstract class AbstractPdf
         ];
         $values = [
             'custom_text' => $pdfData->text,
+            'filename' => $filename,
             'link' => $filename,
         ];
         $this->pdfRepository->updateOrCreate($attributes, $values);

@@ -5,32 +5,32 @@ namespace Tests\Unit\Services\Pdf;
 use App\Exceptions\PdfException;
 use App\Pdf;
 use App\Repositories\PdfRepository;
-use App\Services\Pdf\PdfFactory;
-use App\Services\Pdf\PdfUpdater;
-use App\Structs\PdfData;
+use App\Services\Pdf\PdfDeleter;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
-class PdfUpdaterTest extends TestCase
+class PdfDeleterTest extends TestCase
 {
-    private const PDF_ID = 1;
-    private const PDF_TYPE = 2;
     private const USER_ID = 1;
+    private const PDF_ID = 12;
+    private const PDF_FILENAME = 'test_filename.pdf';
 
-    private $pdfUpdater;
-    private $pdfData;
+    private $pdfDeleter;
     private $pdfRepositoryWithException = false;
 
     public function setUp()
     {
-        $this->pdfData = new PdfData();
         $pdfRepository = $this->mockPdfRepository();
-        $pdfFactory = $this->mockPdfFactory();
-        $this->pdfUpdater = new PdfUpdater($pdfRepository, $pdfFactory);
+        $this->pdfDeleter = new PdfDeleter($pdfRepository);
     }
 
     public function testUpdate_Correct()
     {
-        $this->pdfUpdater->update(self::PDF_ID, self::USER_ID, $this->pdfData);
+        Storage::shouldReceive('delete')
+            ->with(self::PDF_FILENAME)
+            ->once();
+
+        $this->pdfDeleter->remove(self::USER_ID, self::PDF_ID);
         $this->assertTrue(true);
     }
 
@@ -39,7 +39,7 @@ class PdfUpdaterTest extends TestCase
         $this->pdfRepositoryWithException = true;
         $this->expectException(PdfException::class);
 
-        $this->pdfUpdater->update(self::PDF_ID, self::USER_ID, $this->pdfData);
+        $this->pdfDeleter->remove(self::USER_ID, self::PDF_ID);
         $this->assertTrue(true);
     }
 
@@ -50,7 +50,7 @@ class PdfUpdaterTest extends TestCase
         }
 
         $pdf = new Pdf;
-        $pdf->type = self::PDF_TYPE;
+        $pdf->filename = self::PDF_FILENAME;
 
         return collect([$pdf]);
     }
@@ -61,14 +61,10 @@ class PdfUpdaterTest extends TestCase
         $mockedClass->shouldReceive('findWhere')
             ->andReturnUsing([$this, 'getPdfRepositoryReturn']);
 
-        return $mockedClass;
-    }
-
-    private function mockPdfFactory()
-    {
-        $mockedClass = \Mockery::mock(PdfFactory::class);
-        $mockedClass->shouldReceive('create')
-            ->with(self::PDF_TYPE, self::USER_ID, $this->pdfData);
+        if (!$this->pdfRepositoryWithException) {
+            $mockedClass->shouldReceive('delete')
+                ->with(self::PDF_ID);
+        }
 
         return $mockedClass;
     }

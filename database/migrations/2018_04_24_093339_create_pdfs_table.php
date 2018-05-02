@@ -18,6 +18,7 @@ class CreatePdfsTable extends Migration
             $table->unsignedInteger('user_id');
             $table->tinyInteger('type');
             $table->text('custom_text');
+            $table->string('filename');
             $table->string('link');
             $table->timestamps();
         });

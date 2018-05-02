@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Services\Pdf\PdfDeleter;
 use App\Structs\PdfData;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -132,14 +133,19 @@ class PdfController extends AbstractApiController
      * @param  int $id
      * @return JsonResponse
      */
-    public function destroy($id)
+    public function destroy(PdfDeleter $pdfDeleter, $id)
     {
         $userId = 1;
-        $where = [
-            'id' => $id,
-            'user_id' => $userId
-        ];
-        $data = $this->repository->deleteWhere($where);
+
+        try {
+            $pdfDeleter->remove($userId, $id);
+        } catch (PdfException $e) {
+            return $this->response->error(
+                $e->getMessage(),
+                null,
+                Response::HTTP_UNPROCESSABLE_ENTITY
+            );
+        }
 
         return $this->response->success('The resource was successfully removed.');
     }

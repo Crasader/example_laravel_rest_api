@@ -98,6 +98,7 @@ abstract class AbstractPdfTestCase extends TestCase
         ];
         $values = [
             'custom_text' => $this->getPdfData()->text,
+            'filename' => $this->getFilename(),
             'link' => $this->getFilename(),
         ];
 
