@@ -18,8 +18,12 @@ Route::get('/', function () {
 });
 
 Route::namespace('API')->group(function () {
-    Route::post('pdfs/all', 'PdfController@storeAllTypes');
-    Route::apiResource('pdfs', 'PdfController', ['except' => ['store']]);
+    Route::post('/auth', 'AuthController@auth');
+
+    Route::middleware('jwt.auth')->group(function () {
+        Route::post('pdfs/all', 'PdfController@storeAllTypes');
+        Route::apiResource('pdfs', 'PdfController', ['except' => ['store']]);
+    });
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {

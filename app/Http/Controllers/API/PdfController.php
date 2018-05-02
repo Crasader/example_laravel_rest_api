@@ -25,6 +25,8 @@ class PdfController extends AbstractApiController
      */
     public function index(Request $request)
     {
+        dd($this->user);
+
         // TODO: get user from request using a received token
         $userId = 1;
         $where = ['user_id' => $userId];
