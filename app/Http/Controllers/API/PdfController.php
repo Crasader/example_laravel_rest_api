@@ -40,7 +40,6 @@ class PdfController extends AbstractApiController
      * @param  PdfFactory $pdfFactory
      * @param  PdfDataGetter $pdfDataGetter
      * @return JsonResponse
-     * @throws \Prettus\Validator\Exceptions\ValidatorException
      */
     public function storeAllTypes(
         Request $request,
