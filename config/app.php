@@ -152,7 +152,7 @@ return [
          */
         Prettus\Repository\Providers\RepositoryServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
-        Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
+        Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -216,7 +216,6 @@ return [
          * Package Facades...
          */
         'PDF' => Barryvdh\DomPDF\Facade::class,
-        'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
     ],
 
 ];

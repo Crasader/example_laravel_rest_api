@@ -9,13 +9,6 @@ use Illuminate\Http\Request;
 
 abstract class AbstractApiController extends Controller
 {
-    private const EMPTY_MODEL_ATTRIBUTES = [
-        'id' => 0,
-        'firstname' => '',
-        'lastname' => '',
-        'email' => '',
-    ];
-
     protected $response;
     protected $repository;
     protected $user;
@@ -27,12 +20,10 @@ abstract class AbstractApiController extends Controller
         $this->repository = resolve($this->getRepository());
 
         $this->user = new User();
-        $this->user->forceFill(self::EMPTY_MODEL_ATTRIBUTES);
+        $this->user->forceFill(User::DEFAULT_USER_DATA);
 
-        dd($request->user());
-
-        if ($request->user()) {
-            $this->user = $request->user()->toArray();
+        if (auth()->user()) {
+            $this->user = auth()->user();
         }
 
         $this->request = $request;
