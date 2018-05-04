@@ -8,6 +8,9 @@ abstract class PdfTypes
     const FULL = 1;
     const ADVANCED = 2;
 
+    /**
+     * @var string[]
+     */
     public static $titles = [
         self::SHORT => 'short',
         self::FULL => 'full',

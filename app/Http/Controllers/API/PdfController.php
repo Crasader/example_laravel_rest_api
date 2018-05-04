@@ -20,7 +20,7 @@ class PdfController extends AbstractApiController
      *
      * @return JsonResponse
      */
-    public function index()
+    public function index(): JsonResponse
     {
         $where = ['user_id' => $this->user->id];
         $data = $this->repository->findWhere($where);
@@ -29,7 +29,7 @@ class PdfController extends AbstractApiController
     }
 
     /**
-     * Store newly created pdfs to the storage
+     * Store newly created PDFs to the storage
      *
      * @param  PdfFactory $pdfFactory
      * @param  PdfDataGetter $pdfDataGetter
@@ -38,7 +38,7 @@ class PdfController extends AbstractApiController
     public function storeAllTypes(
         PdfFactory $pdfFactory,
         PdfDataGetter $pdfDataGetter
-    ) {
+    ): JsonResponse {
         $customTexts = $this->request->only([
             'text_short',
             'text_full',
@@ -57,7 +57,7 @@ class PdfController extends AbstractApiController
             );
         }
 
-        return $this->response->success('Pdfs were successfully created.');
+        return $this->response->success('PDFs were successfully created.');
     }
 
     /**
@@ -66,7 +66,7 @@ class PdfController extends AbstractApiController
      * @param  int $id
      * @return JsonResponse
      */
-    public function show($id)
+    public function show($id): JsonResponse
     {
         $where = [
             'id' => $id,
@@ -84,7 +84,7 @@ class PdfController extends AbstractApiController
      * @param  int $id
      * @return JsonResponse
      */
-    public function update(PdfUpdater $pdfUpdater, $id)
+    public function update(PdfUpdater $pdfUpdater, $id): JsonResponse
     {
         $text = $this->request->input('text');
 
@@ -109,10 +109,11 @@ class PdfController extends AbstractApiController
     /**
      * Remove the specified resource from storage.
      *
+     * @param PdfDeleter $pdfDeleter
      * @param  int $id
      * @return JsonResponse
      */
-    public function destroy(PdfDeleter $pdfDeleter, $id)
+    public function destroy(PdfDeleter $pdfDeleter, $id): JsonResponse
     {
         try {
             $pdfDeleter->remove($this->user->id, $id);
@@ -127,6 +128,9 @@ class PdfController extends AbstractApiController
         return $this->response->success('The resource was successfully removed.');
     }
 
+    /**
+     * @return string
+     */
     protected function getRepository() : string
     {
         return PdfRepository::class;

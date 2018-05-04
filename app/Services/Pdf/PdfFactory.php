@@ -11,7 +11,7 @@ class PdfFactory
     private const PDF_DATA_NOT_EXISTS = "PdfData instance doesn't exist for the '%s' pdf type.";
     private const PDF_TYPE_NOT_EXISTS = "The requested pdf type with '%d' id doesn't exist.";
 
-    private const PDFS = [
+    private const PDFs = [
         PdfTypes::SHORT => ShortPdf::class,
         PdfTypes::FULL => FullPdf::class,
         PdfTypes::ADVANCED => AdvancedPdf::class,
@@ -26,7 +26,7 @@ class PdfFactory
      */
     public function createAll(int $userId, $pdfDataArray) : void
     {
-        foreach (self::PDFS as $type => $className) {
+        foreach (self::PDFs as $type => $className) {
             $pdf = resolve($className);
             if ($pdf instanceof AbstractPdf) {
                 $pdfData = $this->getPdfDataFromArray($type, $pdfDataArray);
@@ -44,11 +44,11 @@ class PdfFactory
      */
     public function create(int $type, int $userId, PdfData $pdfData): void
     {
-        if (!array_key_exists($type, self::PDFS)) {
+        if (!array_key_exists($type, self::PDFs)) {
             throw new PdfException(sprintf(self::PDF_TYPE_NOT_EXISTS, $type));
         }
 
-        $pdf = resolve(self::PDFS[$type]);
+        $pdf = resolve(self::PDFs[$type]);
         if ($pdf instanceof AbstractPdf) {
             $pdf->createOrUpdate($userId, $pdfData);
         }

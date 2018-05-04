@@ -1,4 +1,4 @@
-@extends('pdfs.layout')
+@extends('pdf.layout')
 
 @section('title', 'Advanced')
 

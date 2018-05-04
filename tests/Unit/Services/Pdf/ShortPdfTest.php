@@ -9,7 +9,7 @@ use App\Structs\PdfData;
 class ShortPdfTest extends AbstractPdfTestCase
 {
     private const FILENAME_PATTERN = 'short_%d.pdf';
-    private const HTML_TEMPLATE = 'pdfs.short';
+    private const HTML_TEMPLATE = 'pdf.short';
 
     protected function getFilename(): string
     {

@@ -1,8 +1,8 @@
-@extends('pdfs.layout')
+@extends('pdf.layout')
 
-@section('title', 'Short')
+@section('title', 'Full')
 
-@section('document-header', sprintf('%s - Short Information', $name))
+@section('document-header', sprintf('%s - Full Information', $name))
 
 @section('user-short-information', sprintf('%s (%s)', $name, $email))
 

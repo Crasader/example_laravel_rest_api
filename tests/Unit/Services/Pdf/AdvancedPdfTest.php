@@ -9,7 +9,7 @@ use App\Structs\PdfData;
 class AdvancedPdfTest extends AbstractPdfTestCase
 {
     private const FILENAME_PATTERN = 'advanced_%d.pdf';
-    private const HTML_TEMPLATE = 'pdfs.advanced';
+    private const HTML_TEMPLATE = 'pdf.advanced';
 
     protected function getFilename(): string
     {

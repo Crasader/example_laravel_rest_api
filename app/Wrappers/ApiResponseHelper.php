@@ -1,11 +1,14 @@
 <?php
 
-namespace App\Helpers;
+namespace App\Wrappers;
 
 use Illuminate\Http\JsonResponse;
 
 class ApiResponseHelper
 {
+    /**
+     * @var ApiResponseHelper
+     */
     private static $instance = null;
 
     /**

@@ -4,7 +4,7 @@ namespace Tests\Unit\Services\Pdf;
 
 use App\Constants\PdfTypes;
 use Tests\TestCase;
-use App\Helpers\PdfRenderer;
+use App\Wrappers\PdfRenderer;
 use App\Repositories\PdfRepository;
 use App\Structs\PdfData;
 use Illuminate\Support\Facades\Storage;

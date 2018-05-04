@@ -35,7 +35,10 @@ class User extends Authenticatable implements JWTSubject
         'password', 'remember_token',
     ];
 
-    public function getNameAttribute()
+    /**
+     * @return string
+     */
+    public function getNameAttribute(): string
     {
         return sprintf('%s %s', $this->firstname, $this->lastname);
     }

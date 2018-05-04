@@ -2,25 +2,37 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\ApiResponseHelper;
+use App\Wrappers\ApiResponseHelper;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class AuthController extends Controller
 {
     /**
+     * @var ApiResponseHelper
+     */
+    private $response;
+
+    public function __construct()
+    {
+        $this->response = ApiResponseHelper::getInstance();
+    }
+
+    /**
      * Get a JWT via given credentials.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function login(Request $request)
+    public function login(Request $request): JsonResponse
     {
         $credentials = $request->only(['email', 'password']);
         $token = auth()->attempt($credentials);
 
         if (!$token) {
             $message = 'Unauthenticated.';
-            return ApiResponseHelper::getInstance()->error($message, null, Response::HTTP_UNAUTHORIZED);
+            return $this->response->error($message, null, Response::HTTP_UNAUTHORIZED);
         }
 
         return $this->respondWithToken($token);
@@ -29,13 +41,13 @@ class AuthController extends Controller
     /**
      * Log the user out (Invalidate the token).
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function logout()
+    public function logout(): JsonResponse
     {
         auth()->logout();
 
-        return ApiResponseHelper::getInstance()->success('Successfully logged out');
+        return $this->response->success('Successfully logged out');
     }
 
     /**
@@ -43,9 +55,9 @@ class AuthController extends Controller
      *
      * @param  string $token
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    protected function respondWithToken($token)
+    protected function respondWithToken($token): JsonResponse
     {
         $data = [
             'access_token' => $token,
@@ -53,6 +65,6 @@ class AuthController extends Controller
             'expires_in' => auth()->factory()->getTTL() * 60,
         ];
 
-        return ApiResponseHelper::getInstance()->success('', $data);
+        return $this->response->success('', $data);
     }
 }

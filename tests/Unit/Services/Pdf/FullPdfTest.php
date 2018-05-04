@@ -9,7 +9,7 @@ use App\Structs\PdfData;
 class FullPdfTest extends AbstractPdfTestCase
 {
     private const FILENAME_PATTERN = 'full_%d.pdf';
-    private const HTML_TEMPLATE = 'pdfs.full';
+    private const HTML_TEMPLATE = 'pdf.full';
 
     protected function getFilename(): string
     {

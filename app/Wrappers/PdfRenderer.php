@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Helpers;
+namespace App\Wrappers;
 
 use Dompdf\Dompdf;
-use PDF;
 
 class PdfRenderer
 {
@@ -12,7 +11,7 @@ class PdfRenderer
      * @param  array  $data
      * @return Dompdf
      */
-    public function render(string $template, array $data)
+    public function render(string $template, array $data): Dompdf
     {
         return PDF::loadView($template, $data);
     }

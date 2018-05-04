@@ -2,14 +2,21 @@
 
 namespace App\Services\Pdf;
 
-use App\Helpers\PdfRenderer;
+use App\Wrappers\PdfRenderer;
 use App\Repositories\PdfRepository;
 use App\Structs\PdfData;
 use Illuminate\Support\Facades\Storage;
 
 abstract class AbstractPdf
 {
+    /**
+     * @var PdfRenderer
+     */
     private $pdfRenderer;
+
+    /**
+     * @var PdfRepository
+     */
     private $pdfRepository;
 
     public function __construct(
@@ -26,7 +33,7 @@ abstract class AbstractPdf
      * @return string
      * @throws \Prettus\Validator\Exceptions\ValidatorException
      */
-    public function createOrUpdate(int $userId, PdfData $pdfData) : string
+    public function createOrUpdate(int $userId, PdfData $pdfData): string
     {
         $template = $this->getTemplate();
         $pdf = $this->pdfRenderer->render($template, $pdfData->toArray());
@@ -48,7 +55,19 @@ abstract class AbstractPdf
         return $filename;
     }
 
+    /**
+     * @return int
+     */
     abstract public function getType() : int;
+
+    /**
+     * @param int $userId
+     * @return string
+     */
     abstract protected function getFilename(int $userId) : string;
+
+    /**
+     * @return string
+     */
     abstract protected function getTemplate() : string;
 }

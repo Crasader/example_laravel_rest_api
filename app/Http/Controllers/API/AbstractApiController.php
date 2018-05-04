@@ -3,15 +3,31 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Helpers\ApiResponseHelper;
+use App\Repositories\AbstractRepository;
+use App\Wrappers\ApiResponseHelper;
 use App\User;
 use Illuminate\Http\Request;
 
 abstract class AbstractApiController extends Controller
 {
+    /**
+     * @var ApiResponseHelper
+     */
     protected $response;
+
+    /**
+     * @var AbstractRepository
+     */
     protected $repository;
+
+    /**
+     * @var User
+     */
     protected $user;
+
+    /**
+     * @var Request
+     */
     protected $request;
 
     public function __construct(Request $request)
@@ -29,5 +45,8 @@ abstract class AbstractApiController extends Controller
         $this->request = $request;
     }
 
+    /**
+     * @return string
+     */
     abstract protected function getRepository() : string;
 }

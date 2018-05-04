@@ -10,6 +10,9 @@ class PdfDeleter
 {
     private const PDF_ID_NOT_FOUND = 'The requested pdf id is not found.';
 
+    /**
+     * @var PdfRepository
+     */
     private $pdfRepository;
 
     public function __construct(PdfRepository $pdfRepository)

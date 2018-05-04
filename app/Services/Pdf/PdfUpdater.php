@@ -10,7 +10,14 @@ class PdfUpdater
 {
     private const PDF_ID_NOT_FOUND = 'The requested pdf id is not found.';
 
+    /**
+     * @var PdfRepository
+     */
     private $pdfRepository;
+
+    /**
+     * @var PdfFactory
+     */
     private $pdfFactory;
 
     public function __construct(PdfRepository $pdfRepository, PdfFactory $pdfFactory)
