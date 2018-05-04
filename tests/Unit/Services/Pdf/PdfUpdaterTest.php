@@ -5,7 +5,7 @@ namespace Tests\Unit\Services\Pdf;
 use App\Exceptions\PdfException;
 use App\Pdf;
 use App\Repositories\PdfRepository;
-use App\Services\Pdf\PdfFactory;
+use App\Factories\PdfFactory;
 use App\Services\Pdf\PdfUpdater;
 use App\Structs\PdfData;
 use Tests\TestCase;

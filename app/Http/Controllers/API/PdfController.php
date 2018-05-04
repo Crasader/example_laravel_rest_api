@@ -6,7 +6,7 @@ use App\Services\Pdf\PdfDeleter;
 use App\Structs\PdfData;
 use Illuminate\Http\JsonResponse;
 use App\Repositories\PdfRepository;
-use App\Services\Pdf\PdfFactory;
+use App\Factories\PdfFactory;
 use App\Services\Pdf\PdfDataGetter;
 use App\Exceptions\PdfException;
 use Illuminate\Http\Response;

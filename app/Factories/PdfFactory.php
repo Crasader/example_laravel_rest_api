@@ -1,8 +1,12 @@
 <?php
 
-namespace App\Services\Pdf;
+namespace App\Factories;
 
 use App\Constants\PdfTypes;
+use App\Services\Pdf\AbstractPdf;
+use App\Services\Pdf\AdvancedPdf;
+use App\Services\Pdf\FullPdf;
+use App\Services\Pdf\ShortPdf;
 use App\Structs\PdfData;
 use App\Exceptions\PdfException;
 

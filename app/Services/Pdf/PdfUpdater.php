@@ -3,6 +3,7 @@
 namespace App\Services\Pdf;
 
 use App\Exceptions\PdfException;
+use App\Factories\PdfFactory;
 use App\Repositories\PdfRepository;
 use App\Structs\PdfData;
 
