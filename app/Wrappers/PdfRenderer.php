@@ -2,17 +2,18 @@
 
 namespace App\Wrappers;
 
-use Dompdf\Dompdf;
+use Barryvdh\DomPDF\PDF;
+use Barryvdh\DomPDF\Facade as PDFFacade;
 
 class PdfRenderer
 {
     /**
      * @param  string $template
      * @param  array  $data
-     * @return Dompdf
+     * @return PDF
      */
-    public function render(string $template, array $data): Dompdf
+    public function render(string $template, array $data): PDF
     {
-        return PDF::loadView($template, $data);
+        return PDFFacade::loadView($template, $data);
     }
 }
