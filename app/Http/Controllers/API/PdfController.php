@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Services\Pdf\PdfDeleter;
+use App\Services\Pdf\PdfGetter;
 use App\Structs\PdfData;
 use Illuminate\Http\JsonResponse;
 use App\Repositories\PdfRepository;
@@ -63,16 +64,21 @@ class PdfController extends AbstractApiController
     /**
      * Display the specified resource.
      *
+     * @param PdfGetter $pdfGetter
      * @param  int $id
      * @return JsonResponse
      */
-    public function show($id): JsonResponse
+    public function show(PdfGetter $pdfGetter, $id): JsonResponse
     {
-        $where = [
-            'id' => $id,
-            'user_id' => $this->user->id,
-        ];
-        $data = $this->repository->findWhere($where);
+        try {
+            $data = $pdfGetter->get($this->user->id, $id);
+        } catch (PdfException $e) {
+            return $this->response->error(
+                $e->getMessage(),
+                null,
+                Response::HTTP_NOT_FOUND
+            );
+        }
 
         return $this->response->success('', $data);
     }

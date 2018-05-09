@@ -90,10 +90,13 @@ abstract class AbstractPdfTestCase extends TestCase
 
     protected function mockPdfRenderer()
     {
+        $pdfMockedClass = \Mockery::mock(\Barryvdh\DomPDF\PDF::class);
+        $pdfMockedClass->shouldReceive('output');
+
         $mockedClass = \Mockery::mock(PdfRenderer::class);
         $mockedClass->shouldReceive('render')
             ->with($this->getTemplate(), $this->getPdfData()->toArray())
-            ->andReturn(new \Dompdf\Dompdf);
+            ->andReturn($pdfMockedClass);
 
         return $mockedClass;
     }
