@@ -1,9 +1,11 @@
 <?php
 
-Route::prefix('auth')->group(function () {
-    Route::post('login', 'AuthController@login');
-    Route::post('logout', 'AuthController@logout')->middleware('auth:api');
-});
+Route::prefix('auth')
+    ->namespace('Auth')
+    ->group(function () {
+        Route::post('login', 'AuthController@login');
+        Route::post('logout', 'AuthController@logout')->middleware('auth:api');
+    });
 
 Route::middleware('auth:api')
     ->namespace('API')

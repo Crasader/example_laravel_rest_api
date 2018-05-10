@@ -3,10 +3,7 @@
 namespace App\Exceptions;
 
 use Exception;
-use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use App\Wrappers\ApiResponseHelper;
-use Illuminate\Http\Response;
 
 class Handler extends ExceptionHandler
 {
@@ -52,29 +49,6 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        if ($request->isJson() && $exception) {
-            $message = 'Sorry, something went wrong. We are investigating the issue.';
-            $data = null;
-            $code = Response::HTTP_SERVICE_UNAVAILABLE;
-
-            return ApiResponseHelper::getInstance()->error($message, $data, $code);
-        }
-
         return parent::render($request, $exception);
-    }
-
-    /**
-     * @param \Illuminate\Http\Request $request
-     * @param AuthenticationException $exception
-     * @return \Illuminate\Http\JsonResponse|Response
-     */
-    protected function unauthenticated($request, AuthenticationException $exception)
-    {
-        return ApiResponseHelper::getInstance()
-            ->error(
-                $exception->getMessage(),
-                null,
-                Response::HTTP_UNAUTHORIZED
-            );
     }
 }

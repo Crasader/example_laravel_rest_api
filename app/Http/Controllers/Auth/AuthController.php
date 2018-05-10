@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\Controller;
 use App\Wrappers\ApiResponseHelper;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -31,7 +32,7 @@ class AuthController extends Controller
         $token = auth()->attempt($credentials);
 
         if (!$token) {
-            $message = 'Unauthenticated.';
+            $message = 'Bad credentials.';
             return $this->response->error($message, null, Response::HTTP_UNAUTHORIZED);
         }
 
