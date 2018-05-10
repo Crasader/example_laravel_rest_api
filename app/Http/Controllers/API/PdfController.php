@@ -2,17 +2,16 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Services\Pdf\PdfDeleter;
-use App\Services\Pdf\PdfGetter;
 use App\Structs\PdfData;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use App\Repositories\PdfRepository;
 use App\Factories\PdfFactory;
 use App\Services\Pdf\PdfDataGetter;
 use App\Exceptions\PdfException;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
 use Prettus\Validator\Exceptions\ValidatorException;
-use App\Services\Pdf\PdfUpdater;
 
 class PdfController extends AbstractApiController
 {
@@ -64,15 +63,19 @@ class PdfController extends AbstractApiController
     /**
      * Display the specified resource.
      *
-     * @param PdfGetter $pdfGetter
      * @param  int $id
      * @return JsonResponse
      */
-    public function show(PdfGetter $pdfGetter, $id): JsonResponse
+    public function show($id): JsonResponse
     {
+        $where = [
+            'id' => $id,
+            'user_id' => $this->user->id,
+        ];
+
         try {
-            $data = $pdfGetter->get($this->user->id, $id);
-        } catch (PdfException $e) {
+            $data = $this->repository->findOneWhereOrFail($where);
+        } catch (ModelNotFoundException $e) {
             return $this->response->error(
                 $e->getMessage(),
                 null,
@@ -86,12 +89,27 @@ class PdfController extends AbstractApiController
     /**
      * Update the specified resource in storage.
      *
-     * @param PdfUpdater $pdfUpdater
+     * @param PdfFactory $pdfFactory
      * @param  int $id
      * @return JsonResponse
      */
-    public function update(PdfUpdater $pdfUpdater, $id): JsonResponse
+    public function update(PdfFactory $pdfFactory, $id): JsonResponse
     {
+        $where = [
+            'id' => $id,
+            'user_id' => $this->user->id,
+        ];
+
+        try {
+            $pdf = $this->repository->findOneWhereOrFail($where);
+        } catch (ModelNotFoundException $e) {
+            return $this->response->error(
+                $e->getMessage(),
+                null,
+                Response::HTTP_NOT_FOUND
+            );
+        }
+
         $text = $this->request->input('text');
 
         $pdfData = new PdfData;
@@ -100,7 +118,7 @@ class PdfController extends AbstractApiController
         $pdfData->text = $text;
 
         try {
-            $pdfUpdater->update($id, $this->user->id, $pdfData);
+            $pdfFactory->create($pdf->type, $this->user->id, $pdfData);
         } catch (PdfException | ValidatorException $e) {
             return $this->response->error(
                 $e->getMessage(),
@@ -115,21 +133,28 @@ class PdfController extends AbstractApiController
     /**
      * Remove the specified resource from storage.
      *
-     * @param PdfDeleter $pdfDeleter
      * @param  int $id
      * @return JsonResponse
      */
-    public function destroy(PdfDeleter $pdfDeleter, $id): JsonResponse
+    public function destroy($id): JsonResponse
     {
+        $where = [
+            'id' => $id,
+            'user_id' => $this->user->id,
+        ];
+
         try {
-            $pdfDeleter->remove($this->user->id, $id);
-        } catch (PdfException $e) {
+            $pdf = $this->repository->findOneWhereOrFail($where);
+        } catch (ModelNotFoundException $e) {
             return $this->response->error(
                 $e->getMessage(),
                 null,
-                Response::HTTP_UNPROCESSABLE_ENTITY
+                Response::HTTP_NOT_FOUND
             );
         }
+
+        Storage::delete($pdf->filename);
+        $this->repository->delete($id);
 
         return $this->response->success('The resource was successfully removed.');
     }
