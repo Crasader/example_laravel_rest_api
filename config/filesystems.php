@@ -64,6 +64,11 @@ return [
             'url' => env('AWS_URL'),
         ],
 
+        'dummy-files' => [
+            'driver' => 'local',
+            'root' => sprintf('%s/%s', base_path(), 'tests/DummyFiles/'),
+        ]
+
     ],
 
 ];
