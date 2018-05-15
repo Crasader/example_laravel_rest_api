@@ -21,6 +21,7 @@ class PdfApiTest extends TestCase
     private const PDF_TYPES_NUMBER = 3;
     private const WRONG_PDF_ID = 123;
     private const WRONG_PDF_TYPE = 4;
+    private const MODEL_NOT_FOUND_EXCEPTION_MESSAGE = 'Resource not found.';
     private const PDF_ITEM_JSON_STRUCTURE = [
         'id',
         'user_id',
@@ -145,7 +146,7 @@ class PdfApiTest extends TestCase
         $response
             ->assertStatus(Response::HTTP_NOT_FOUND)
             ->assertJson([
-                'message' => 'No query results for model [App\\Pdf].',
+                'message' => self::MODEL_NOT_FOUND_EXCEPTION_MESSAGE,
             ])
         ;
     }
@@ -193,7 +194,7 @@ class PdfApiTest extends TestCase
         $response
             ->assertStatus(Response::HTTP_NOT_FOUND)
             ->assertJson([
-                'message' => 'No query results for model [App\\Pdf].',
+                'message' => self::MODEL_NOT_FOUND_EXCEPTION_MESSAGE,
             ])
         ;
     }
@@ -257,7 +258,7 @@ class PdfApiTest extends TestCase
         $response
             ->assertStatus(Response::HTTP_NOT_FOUND)
             ->assertJson([
-                'message' => 'No query results for model [App\\Pdf].',
+                'message' => self::MODEL_NOT_FOUND_EXCEPTION_MESSAGE,
             ])
         ;
     }

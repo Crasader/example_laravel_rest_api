@@ -72,16 +72,7 @@ class PdfController extends AbstractApiController
             'id' => $id,
             'user_id' => $this->user->id,
         ];
-
-        try {
-            $data = $this->repository->findOneWhereOrFail($where);
-        } catch (ModelNotFoundException $e) {
-            return $this->response->error(
-                $e->getMessage(),
-                null,
-                Response::HTTP_NOT_FOUND
-            );
-        }
+        $data = $this->repository->findOneWhereOrFail($where);
 
         return $this->response->success('', $data);
     }
@@ -99,16 +90,7 @@ class PdfController extends AbstractApiController
             'id' => $id,
             'user_id' => $this->user->id,
         ];
-
-        try {
-            $pdf = $this->repository->findOneWhereOrFail($where);
-        } catch (ModelNotFoundException $e) {
-            return $this->response->error(
-                $e->getMessage(),
-                null,
-                Response::HTTP_NOT_FOUND
-            );
-        }
+        $pdf = $this->repository->findOneWhereOrFail($where);
 
         $text = $this->request->input('text');
 
@@ -142,16 +124,7 @@ class PdfController extends AbstractApiController
             'id' => $id,
             'user_id' => $this->user->id,
         ];
-
-        try {
-            $pdf = $this->repository->findOneWhereOrFail($where);
-        } catch (ModelNotFoundException $e) {
-            return $this->response->error(
-                $e->getMessage(),
-                null,
-                Response::HTTP_NOT_FOUND
-            );
-        }
+        $pdf = $this->repository->findOneWhereOrFail($where);
 
         Storage::delete($pdf->filename);
         $this->repository->delete($id);
