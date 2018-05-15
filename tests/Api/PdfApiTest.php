@@ -31,6 +31,11 @@ class PdfApiTest extends TestCase
         'created_at',
         'updated_at',
     ];
+    private const EXPECTED_FILES_IN_STORAGE = [
+        'short_0.pdf',
+        'full_0.pdf',
+        'advanced_0.pdf',
+    ];
 
     public function setUp()
     {
@@ -78,17 +83,11 @@ class PdfApiTest extends TestCase
             ]);
         }
 
-        $expectedFilenamesInStorage = [
-            'short_0.pdf',
-            'full_0.pdf',
-            'advanced_0.pdf',
-        ];
-
-        foreach ($expectedFilenamesInStorage as $filename) {
+        foreach (self::EXPECTED_FILES_IN_STORAGE as $filename) {
             Storage::assertExists($filename);
         }
 
-        Storage::delete($expectedFilenamesInStorage);
+        $this->clearStorage();
     }
 
     public function testStoreAllTypes_PdfException()
@@ -101,12 +100,15 @@ class PdfApiTest extends TestCase
 
         $response = $this->post($endpoint, $data);
 
+        $missingPdfType = 'advanced';
         $response
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJson([
-                'message' => "PdfData instance doesn't exist for the 'advanced' pdf type.",
+                'message' => "PdfData instance doesn't exist for the '$missingPdfType' pdf type.",
             ])
         ;
+
+        $this->clearStorage();
     }
 
     public function testShow_Correct()
@@ -177,6 +179,8 @@ class PdfApiTest extends TestCase
             'id' => $testRecord->id,
             'custom_text' => $expectedText,
         ]);
+
+        $this->clearStorage();
     }
 
     public function testUpdate_ModelNotFoundException()
@@ -266,5 +270,14 @@ class PdfApiTest extends TestCase
     private function getModel(): string
     {
         return Pdf::class;
+    }
+
+    private function clearStorage(): void
+    {
+        foreach (self::EXPECTED_FILES_IN_STORAGE as $filename) {
+            if (Storage::exists($filename)) {
+                Storage::delete($filename);
+            }
+        }
     }
 }
