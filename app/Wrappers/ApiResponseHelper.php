@@ -39,14 +39,14 @@ class ApiResponseHelper
 
     /**
      * @param  string $message
-     * @param  array|null $data
+     * @param array|null $errors
      * @param  int $status
      * @return JsonResponse
      */
-    public function error(string $message, ?array $data = null, int $status = 404) : JsonResponse
+    public function error(string $message, ?array $errors = null, int $status = 404) : JsonResponse
     {
         return response()->json([
-            'data' => $data,
+            'errors' => $errors,
             'message' => $message,
         ], $status);
     }

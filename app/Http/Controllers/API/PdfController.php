@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\API;
 
 use App\Structs\PdfData;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use App\Repositories\PdfRepository;
 use App\Factories\PdfFactory;
@@ -11,7 +10,6 @@ use App\Services\Pdf\PdfDataGetter;
 use App\Exceptions\PdfException;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
-use Prettus\Validator\Exceptions\ValidatorException;
 
 class PdfController extends AbstractApiController
 {
@@ -39,6 +37,11 @@ class PdfController extends AbstractApiController
         PdfFactory $pdfFactory,
         PdfDataGetter $pdfDataGetter
     ): JsonResponse {
+        $this->request->validate([
+            'text_short' => 'filled',
+            'text_full' => 'filled',
+            'text_advanced' => 'filled',
+        ]);
         $customTexts = $this->request->only([
             'text_short',
             'text_full',
@@ -49,7 +52,7 @@ class PdfController extends AbstractApiController
 
         try {
             $pdfFactory->createAll($this->user->id, $pdfDataArray);
-        } catch (PdfException | ValidatorException $e) {
+        } catch (PdfException $e) {
             return $this->response->error(
                 $e->getMessage(),
                 null,
@@ -66,7 +69,7 @@ class PdfController extends AbstractApiController
      * @param  int $id
      * @return JsonResponse
      */
-    public function show($id): JsonResponse
+    public function show(int $id): JsonResponse
     {
         $where = [
             'id' => $id,
@@ -84,7 +87,7 @@ class PdfController extends AbstractApiController
      * @param  int $id
      * @return JsonResponse
      */
-    public function update(PdfFactory $pdfFactory, $id): JsonResponse
+    public function update(PdfFactory $pdfFactory, int $id): JsonResponse
     {
         $where = [
             'id' => $id,
@@ -92,6 +95,9 @@ class PdfController extends AbstractApiController
         ];
         $pdf = $this->repository->findOneWhereOrFail($where);
 
+        $this->request->validate([
+            'text' => 'required',
+        ]);
         $text = $this->request->input('text');
 
         $pdfData = new PdfData;
@@ -101,7 +107,7 @@ class PdfController extends AbstractApiController
 
         try {
             $pdfFactory->create($pdf->type, $this->user->id, $pdfData);
-        } catch (PdfException | ValidatorException $e) {
+        } catch (PdfException $e) {
             return $this->response->error(
                 $e->getMessage(),
                 null,
@@ -118,7 +124,7 @@ class PdfController extends AbstractApiController
      * @param  int $id
      * @return JsonResponse
      */
-    public function destroy($id): JsonResponse
+    public function destroy(int $id): JsonResponse
     {
         $where = [
             'id' => $id,

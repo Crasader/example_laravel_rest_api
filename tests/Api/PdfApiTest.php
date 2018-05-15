@@ -112,6 +112,28 @@ class PdfApiTest extends TestCase
         $this->clearStorage();
     }
 
+    public function testStoreAllTypes_ValidationException()
+    {
+        $endpoint = $this->getPath() . 'all';
+        $data = [
+            'text_short' => '',
+            'text_full' => '',
+            'text_advanced' => '',
+        ];
+
+        $response = $this->post($endpoint, $data);
+
+        $response
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJson([
+                'message' => 'The given data is invalid.',
+            ])
+            ->assertJsonStructure([
+                'errors' => ['text_short', 'text_full', 'text_advanced']
+            ])
+        ;
+    }
+
     public function testShow_Correct()
     {
         $testRecord = factory($this->getModel())->create([
@@ -206,7 +228,7 @@ class PdfApiTest extends TestCase
         ]);
 
         $endpoint = $this->getPath() . $testRecord->id;
-        $data = ['text' => ''];
+        $data = ['text' => 'test_text'];
 
         $response = $this->put($endpoint, $data);
 
@@ -218,6 +240,26 @@ class PdfApiTest extends TestCase
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJson([
                 'message' => $expectedMessage,
+            ])
+        ;
+    }
+
+    public function testUpdate_ValidationException()
+    {
+        $testRecord = factory($this->getModel())->create();
+
+        $endpoint = $this->getPath() . $testRecord->id;
+        $data = ['text' => ''];
+
+        $response = $this->put($endpoint, $data);
+
+        $response
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJson([
+                'message' => 'The given data is invalid.',
+            ])
+            ->assertJsonStructure([
+                'errors' => ['text']
             ])
         ;
     }

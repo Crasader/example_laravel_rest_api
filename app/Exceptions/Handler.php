@@ -7,6 +7,7 @@ use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Response;
+use Illuminate\Validation\ValidationException;
 
 class Handler extends ExceptionHandler
 {
@@ -58,6 +59,15 @@ class Handler extends ExceptionHandler
                 $message,
                 null,
                 Response::HTTP_NOT_FOUND
+            );
+        }
+
+        if ($exception instanceof ValidationException) {
+            $message = 'The given data is invalid.';
+            return ApiResponseHelper::getInstance()->error(
+                $message,
+                $exception->errors(),
+                Response::HTTP_UNPROCESSABLE_ENTITY
             );
         }
 

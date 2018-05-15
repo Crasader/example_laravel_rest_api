@@ -26,7 +26,6 @@ class PdfFactory
      * @param  PdfData[] $pdfDataArray
      * @return void
      * @throws PdfException
-     * @throws \Prettus\Validator\Exceptions\ValidatorException
      */
     public function createAll(int $userId, $pdfDataArray) : void
     {
@@ -44,7 +43,6 @@ class PdfFactory
      * @param int $userId
      * @param PdfData $pdfData
      * @throws PdfException
-     * @throws \Prettus\Validator\Exceptions\ValidatorException
      */
     public function create(int $type, int $userId, PdfData $pdfData): void
     {

@@ -31,7 +31,6 @@ abstract class AbstractPdf
      * @param  int $userId
      * @param  PdfData $pdfData
      * @return string
-     * @throws \Prettus\Validator\Exceptions\ValidatorException
      */
     public function createOrUpdate(int $userId, PdfData $pdfData): string
     {
