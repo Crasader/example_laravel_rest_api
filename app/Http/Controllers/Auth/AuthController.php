@@ -52,6 +52,14 @@ class AuthController extends Controller
     }
 
     /**
+     * @return JsonResponse
+     */
+    public function getUserInfo(): JsonResponse
+    {
+        return $this->response->success('', auth()->user());
+    }
+
+    /**
      * Get the token array structure.
      *
      * @param  string $token

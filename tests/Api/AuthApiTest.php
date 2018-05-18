@@ -70,7 +70,36 @@ class AuthApiTest extends TestCase
             ]);
         ;
 
-        $unauthenticatedResponse = $this->logout($token);
+        $this->assertUnauthenticated($token);
+    }
+
+    public function testGetUserInfo()
+    {
+        $token = $this->getAccessToken();
+        $response = $this->getUserInfo($token);
+
+        $response
+            ->assertStatus(Response::HTTP_OK)
+            ->assertJsonStructure([
+                'data' => [
+                    'id',
+                    'firstname',
+                    'lastname',
+                    'email',
+                    'created_at',
+                    'updated_at',
+                ],
+                'message',
+            ])
+            ->assertJson([
+                'data' => ['email' => self::USER_EMAIL],
+            ])
+        ;
+    }
+
+    private function assertUnauthenticated(string $token)
+    {
+        $unauthenticatedResponse = $this->getUserInfo($token);
 
         $unauthenticatedResponse
             ->assertStatus(Response::HTTP_UNAUTHORIZED)
@@ -81,13 +110,21 @@ class AuthApiTest extends TestCase
         ;
     }
 
+    private function getUserInfo(string $token): TestResponse
+    {
+        return $this->get(self::AUTH_ROUTE_PREFIX . 'user-info', $this->getHeaders($token));
+    }
+
     private function logout(string $token): TestResponse
     {
-        $headers = [
+        return $this->post(self::AUTH_ROUTE_PREFIX . 'logout', [], $this->getHeaders($token));
+    }
+
+    private function getHeaders(string $token)
+    {
+        return [
             'Authorization' => 'Bearer ' . $token,
         ];
-
-        return $this->post(self::AUTH_ROUTE_PREFIX . 'logout', [], $headers);
     }
 
     private function getAccessToken(): string
