@@ -14,14 +14,19 @@ class PdfApiTest extends TestCase
 {
     use WithoutMiddleware, DatabaseTransactions;
 
-    private const API_PREFIX = '/api/';
-    private const ROUTE_PATH = 'pdfs/';
+    private const PDF_ROUTE_PREFIX = 'api/pdfs/';
     private const PDF_TABLE_NAME = 'pdfs';
     private const DEFAULT_USER_ID = 0;
     private const PDF_TYPES_NUMBER = 3;
     private const WRONG_PDF_ID = 123;
     private const WRONG_PDF_TYPE = 4;
     private const MODEL_NOT_FOUND_EXCEPTION_MESSAGE = 'Resource not found.';
+    private const PDF_DATA_NOT_EXIST_EXCEPTION_MESSAGE = <<<MSG
+PdfData instance doesn't exist for the '%s' pdf type.
+MSG;
+    private const PDF_TYPE_NOT_EXIST_EXCEPTION_MESSAGE = <<<MSG
+The requested pdf type with '%d' id doesn't exist.
+MSG;
     private const PDF_ITEM_JSON_STRUCTURE = [
         'id',
         'user_id',
@@ -47,7 +52,7 @@ class PdfApiTest extends TestCase
     {
         factory($this->getModel(), self::PDF_TYPES_NUMBER)->create();
 
-        $response = $this->get($this->getPath());
+        $response = $this->get(self::PDF_ROUTE_PREFIX);
 
         $response
             ->assertStatus(Response::HTTP_OK)
@@ -61,13 +66,12 @@ class PdfApiTest extends TestCase
 
     public function testStoreAllTypes_Correct()
     {
-        $endpoint = $this->getPath() . 'all';
+        $endpoint = self::PDF_ROUTE_PREFIX . 'all';
         $data = [
             'text_short' => 'test_short_text',
             'text_full' => 'test_full_text',
             'text_advanced' => 'test_advanced_text',
         ];
-
         $response = $this->post($endpoint , $data);
 
         $response
@@ -76,9 +80,8 @@ class PdfApiTest extends TestCase
         ;
 
         $expectedTypesInDb = [PdfTypes::SHORT, PdfTypes::FULL, PdfTypes::ADVANCED];
-
         foreach ($expectedTypesInDb as $type) {
-            $this->assertDatabaseHas('pdfs', [
+            $this->assertDatabaseHas(self::PDF_TABLE_NAME, [
                 'user_id' => self::DEFAULT_USER_ID,
                 'type' => $type,
             ]);
@@ -93,20 +96,20 @@ class PdfApiTest extends TestCase
 
     public function testStoreAllTypes_PdfException()
     {
-        $endpoint = $this->getPath() . 'all';
+        $endpoint = self::PDF_ROUTE_PREFIX . 'all';
         $data = [
             'text_short' => 'test_short_text',
             'text_full' => 'test_full_text',
         ];
-
         $response = $this->post($endpoint, $data);
 
-        $missingPdfType = 'advanced';
+        $message = sprintf(
+            self::PDF_DATA_NOT_EXIST_EXCEPTION_MESSAGE,
+            'advanced'
+        );
         $response
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJson([
-                'message' => "PdfData instance doesn't exist for the '$missingPdfType' pdf type.",
-            ])
+            ->assertJson(['message' => $message])
         ;
 
         $this->clearStorage();
@@ -114,22 +117,23 @@ class PdfApiTest extends TestCase
 
     public function testStoreAllTypes_ValidationException()
     {
-        $endpoint = $this->getPath() . 'all';
+        $endpoint = self::PDF_ROUTE_PREFIX . 'all';
         $data = [
             'text_short' => '',
             'text_full' => '',
             'text_advanced' => '',
         ];
-
         $response = $this->post($endpoint, $data);
 
         $response
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJson([
-                'message' => 'The given data is invalid.',
-            ])
+            ->assertJson(['message' => 'The given data is invalid.'])
             ->assertJsonStructure([
-                'errors' => ['text_short', 'text_full', 'text_advanced']
+                'errors' => [
+                    'text_short',
+                    'text_full',
+                    'text_advanced',
+                ]
             ])
         ;
     }
@@ -140,8 +144,7 @@ class PdfApiTest extends TestCase
             'type' => PdfTypes::ADVANCED,
         ]);
 
-        $endpoint = $this->getPath() . $testRecord->id;
-
+        $endpoint = self::PDF_ROUTE_PREFIX . $testRecord->id;
         $response = $this->get($endpoint);
 
         $response
@@ -161,24 +164,21 @@ class PdfApiTest extends TestCase
 
     public function testShow_ModelNotFoundException()
     {
-        $endpoint = $this->getPath() . self::WRONG_PDF_ID;
-
+        $endpoint = self::PDF_ROUTE_PREFIX . self::WRONG_PDF_ID;
         $response = $this->get($endpoint);
 
         $response
             ->assertStatus(Response::HTTP_NOT_FOUND)
-            ->assertJson([
-                'message' => self::MODEL_NOT_FOUND_EXCEPTION_MESSAGE,
-            ])
+            ->assertJson(['message' => self::MODEL_NOT_FOUND_EXCEPTION_MESSAGE])
         ;
     }
 
     public function testUpdate_Correct()
     {
         $textBeforeUpdate = 'before update';
-        $testRecord = factory($this->getModel())->create([
-            'custom_text' => $textBeforeUpdate,
-        ]);
+        $testRecord = factory($this->getModel())
+            ->create(['custom_text' => $textBeforeUpdate])
+        ;
 
         $this->assertDatabaseHas(self::PDF_TABLE_NAME, [
             'id' => $testRecord->id,
@@ -186,16 +186,13 @@ class PdfApiTest extends TestCase
         ]);
 
         $expectedText = 'after update';
-        $endpoint = $this->getPath() . $testRecord->id;
+        $endpoint = self::PDF_ROUTE_PREFIX . $testRecord->id;
         $data = ['text' => $expectedText];
-
         $response = $this->put($endpoint, $data);
 
         $response
             ->assertStatus(Response::HTTP_OK)
-            ->assertJson([
-                'message' => 'The resource was successfully updated.',
-            ])
+            ->assertJson(['message' => 'The resource was successfully updated.'])
         ;
 
         $this->assertDatabaseHas(self::PDF_TABLE_NAME, [
@@ -208,39 +205,33 @@ class PdfApiTest extends TestCase
 
     public function testUpdate_ModelNotFoundException()
     {
-        $endpoint = $this->getPath() . self::WRONG_PDF_ID;
+        $endpoint = self::PDF_ROUTE_PREFIX . self::WRONG_PDF_ID;
         $data = ['text' => ''];
-
         $response = $this->put($endpoint, $data);
 
         $response
             ->assertStatus(Response::HTTP_NOT_FOUND)
-            ->assertJson([
-                'message' => self::MODEL_NOT_FOUND_EXCEPTION_MESSAGE,
-            ])
+            ->assertJson(['message' => self::MODEL_NOT_FOUND_EXCEPTION_MESSAGE])
         ;
     }
 
     public function testUpdate_PdfException()
     {
-        $testRecord = factory($this->getModel())->create([
-            'type' => self::WRONG_PDF_TYPE,
-        ]);
+        $testRecord = factory($this->getModel())
+            ->create(['type' => self::WRONG_PDF_TYPE])
+        ;
 
-        $endpoint = $this->getPath() . $testRecord->id;
+        $endpoint = self::PDF_ROUTE_PREFIX . $testRecord->id;
         $data = ['text' => 'test_text'];
-
         $response = $this->put($endpoint, $data);
 
         $expectedMessage = sprintf(
-            "The requested pdf type with '%d' id doesn't exist.",
+            self::PDF_TYPE_NOT_EXIST_EXCEPTION_MESSAGE,
             self::WRONG_PDF_TYPE
         );
         $response
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJson([
-                'message' => $expectedMessage,
-            ])
+            ->assertJson(['message' => $expectedMessage])
         ;
     }
 
@@ -248,18 +239,15 @@ class PdfApiTest extends TestCase
     {
         $testRecord = factory($this->getModel())->create();
 
-        $endpoint = $this->getPath() . $testRecord->id;
+        $endpoint = self::PDF_ROUTE_PREFIX . $testRecord->id;
         $data = ['text' => ''];
-
         $response = $this->put($endpoint, $data);
 
         $response
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJson([
-                'message' => 'The given data is invalid.',
-            ])
+            ->assertJson(['message' => 'The given data is invalid.'])
             ->assertJsonStructure([
-                'errors' => ['text']
+                'errors' => ['text'],
             ])
         ;
     }
@@ -267,24 +255,20 @@ class PdfApiTest extends TestCase
     public function testDestroy_Correct()
     {
         $filenameForRemove = 'short_0.pdf';
-        $testRecord = factory($this->getModel())->create(['filename' => $filenameForRemove]);
+        $testRecord = factory($this->getModel())
+            ->create(['filename' => $filenameForRemove])
+        ;
 
-        // copy a dummy file to the base storage folder
-        $dummyFile = 'short_example.pdf';
-        $dummyFileContent = Storage::disk('dummy-files')->get($dummyFile);
-        Storage::put($filenameForRemove, $dummyFileContent);
+        $this->copyDummyFileToBaseStorageFolder($filenameForRemove);
 
         $this->assertDatabaseHas(self::PDF_TABLE_NAME, ['id' => $testRecord->id]);
 
-        $endpoint = $this->getPath() . $testRecord->id;
-
+        $endpoint = self::PDF_ROUTE_PREFIX . $testRecord->id;
         $response = $this->delete($endpoint);
 
         $response
             ->assertStatus(Response::HTTP_OK)
-            ->assertJson([
-                'message' => 'The resource was successfully removed.',
-            ])
+            ->assertJson(['message' => 'The resource was successfully removed.'])
         ;
 
         $this->assertDatabaseMissing(self::PDF_TABLE_NAME, ['id' => $testRecord->id]);
@@ -293,21 +277,21 @@ class PdfApiTest extends TestCase
 
     public function testDestroy_ModelNotFoundException()
     {
-        $endpoint = $this->getPath() . self::WRONG_PDF_ID;
-
+        $endpoint = self::PDF_ROUTE_PREFIX . self::WRONG_PDF_ID;
         $response = $this->delete($endpoint);
 
         $response
             ->assertStatus(Response::HTTP_NOT_FOUND)
-            ->assertJson([
-                'message' => self::MODEL_NOT_FOUND_EXCEPTION_MESSAGE,
-            ])
+            ->assertJson(['message' => self::MODEL_NOT_FOUND_EXCEPTION_MESSAGE])
         ;
     }
 
-    private function getPath(): string
+    private function copyDummyFileToBaseStorageFolder(string $targetFilename)
     {
-        return self::API_PREFIX . self::ROUTE_PATH;
+        $dummyFileContent = Storage::disk('dummy-files')
+            ->get('short_example.pdf')
+        ;
+        Storage::put($targetFilename, $dummyFileContent);
     }
 
     private function getModel(): string

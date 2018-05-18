@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use App\Wrappers\ApiResponseHelper;
 use Exception;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Response;
@@ -72,5 +73,19 @@ class Handler extends ExceptionHandler
         }
 
         return parent::render($request, $exception);
+    }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @param AuthenticationException $exception
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function unauthenticated($request, AuthenticationException $exception)
+    {
+        return ApiResponseHelper::getInstance()->error(
+            $exception->getMessage(),
+            null,
+            Response::HTTP_UNAUTHORIZED
+        );
     }
 }

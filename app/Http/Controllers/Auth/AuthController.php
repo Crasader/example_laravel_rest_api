@@ -48,7 +48,7 @@ class AuthController extends Controller
     {
         auth()->logout();
 
-        return $this->response->success('Successfully logged out');
+        return $this->response->success('Successfully logged out.');
     }
 
     /**
