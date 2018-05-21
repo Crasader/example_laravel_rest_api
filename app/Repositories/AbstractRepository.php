@@ -2,7 +2,6 @@
 
 namespace App\Repositories;
 
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Prettus\Repository\Eloquent\BaseRepository;
 
 abstract class AbstractRepository extends BaseRepository
@@ -11,7 +10,7 @@ abstract class AbstractRepository extends BaseRepository
      * @param array $where
      * @param array $columns
      * @return mixed
-     * @throws ModelNotFoundException
+     * @throws \Prettus\Repository\Exceptions\RepositoryException
      */
     public function findOneWhereOrFail(array $where, $columns = ['*'])
     {

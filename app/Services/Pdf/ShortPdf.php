@@ -12,7 +12,7 @@ class ShortPdf extends AbstractPdf
     /**
      * @return int
      */
-    public function getType() : int
+    public function getType(): int
     {
         return PdfTypes::SHORT;
     }
@@ -21,7 +21,7 @@ class ShortPdf extends AbstractPdf
      * @param int $userId
      * @return string
      */
-    protected function getFilename(int $userId) : string
+    protected function getFilename(int $userId): string
     {
         return sprintf(self::FILENAME_PATTERN, $userId);
     }
@@ -29,7 +29,7 @@ class ShortPdf extends AbstractPdf
     /**
      * @return string
      */
-    protected function getTemplate() : string
+    protected function getTemplate(): string
     {
         return self::HTML_TEMPLATE;
     }

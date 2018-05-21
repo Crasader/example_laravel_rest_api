@@ -97,6 +97,9 @@ class AuthApiTest extends TestCase
         ;
     }
 
+    /**
+     * @param string $token
+     */
     private function assertUnauthenticated(string $token)
     {
         $unauthenticatedResponse = $this->getUserInfo($token);
@@ -110,23 +113,38 @@ class AuthApiTest extends TestCase
         ;
     }
 
+    /**
+     * @param string $token
+     * @return TestResponse
+     */
     private function getUserInfo(string $token): TestResponse
     {
         return $this->get(self::AUTH_ROUTE_PREFIX . 'user-info', $this->getHeaders($token));
     }
 
+    /**
+     * @param string $token
+     * @return TestResponse
+     */
     private function logout(string $token): TestResponse
     {
         return $this->post(self::AUTH_ROUTE_PREFIX . 'logout', [], $this->getHeaders($token));
     }
 
-    private function getHeaders(string $token)
+    /**
+     * @param string $token
+     * @return array
+     */
+    private function getHeaders(string $token): array
     {
         return [
             'Authorization' => 'Bearer ' . $token,
         ];
     }
 
+    /**
+     * @return string
+     */
     private function getAccessToken(): string
     {
         $loginResponse = $this->login(self::USER_EMAIL, self::USER_PASSWORD);
@@ -135,6 +153,11 @@ class AuthApiTest extends TestCase
         return $accessToken;
     }
 
+    /**
+     * @param string $email
+     * @param string $password
+     * @return TestResponse
+     */
     private function login(string $email, string $password): TestResponse
     {
         $credentials = [
@@ -145,6 +168,9 @@ class AuthApiTest extends TestCase
         return $this->post(self::AUTH_ROUTE_PREFIX . 'login', $credentials);
     }
 
+    /**
+     * @return string
+     */
     private function getModel(): string
     {
         return User::class;

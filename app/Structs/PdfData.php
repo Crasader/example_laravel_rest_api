@@ -24,7 +24,7 @@ class PdfData implements Arrayable
     /**
      * @return array
      */
-    public function toArray() : array
+    public function toArray(): array
     {
         return [
             'name' => $this->name,

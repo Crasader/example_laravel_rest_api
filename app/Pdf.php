@@ -12,6 +12,10 @@ class Pdf extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'type', 'custom_text', 'filename', 'link'
+        'user_id',
+        'type',
+        'custom_text',
+        'filename',
+        'link',
     ];
 }

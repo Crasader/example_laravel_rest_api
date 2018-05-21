@@ -12,7 +12,14 @@ class PdfDataGetterTest extends TestCase
 {
     const PDF_TYPES_NUMBER = 3;
 
+    /**
+     * @var PdfDataGetter
+     */
     private $pdfDataGetter;
+
+    /**
+     * @var User
+     */
     private $user;
 
     public function setUp()

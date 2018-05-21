@@ -4,9 +4,9 @@ namespace App\Constants;
 
 abstract class PdfTypes
 {
-    const SHORT = 0;
-    const FULL = 1;
-    const ADVANCED = 2;
+    public const SHORT = 0;
+    public const FULL = 1;
+    public const ADVANCED = 2;
 
     /**
      * @var string[]

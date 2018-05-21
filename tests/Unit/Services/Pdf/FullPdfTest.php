@@ -11,16 +11,25 @@ class FullPdfTest extends AbstractPdfTestCase
     private const FILENAME_PATTERN = 'full_%d.pdf';
     private const HTML_TEMPLATE = 'pdf.full';
 
+    /**
+     * @return string
+     */
     protected function getFilename(): string
     {
         return sprintf(self::FILENAME_PATTERN, self::USER_ID);
     }
 
+    /**
+     * @return string
+     */
     protected function getTemplate(): string
     {
         return self::HTML_TEMPLATE;
     }
 
+    /**
+     * @return PdfData
+     */
     protected function getPdfData(): PdfData
     {
         $pdfDataArray = $this->getPdfDataArray();
@@ -28,11 +37,17 @@ class FullPdfTest extends AbstractPdfTestCase
         return $pdfData;
     }
 
+    /**
+     * @return string
+     */
     protected function getPdfClass(): string
     {
         return FullPdf::class;
     }
 
+    /**
+     * @return int
+     */
     protected function getPdfType(): int
     {
         return PdfTypes::FULL;

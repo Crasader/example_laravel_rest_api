@@ -31,6 +31,7 @@ abstract class AbstractPdf
      * @param  int $userId
      * @param  PdfData $pdfData
      * @return string
+     * @throws \Prettus\Validator\Exceptions\ValidatorException
      */
     public function createOrUpdate(int $userId, PdfData $pdfData): string
     {
@@ -57,16 +58,16 @@ abstract class AbstractPdf
     /**
      * @return int
      */
-    abstract public function getType() : int;
+    abstract public function getType(): int;
 
     /**
      * @param int $userId
      * @return string
      */
-    abstract protected function getFilename(int $userId) : string;
+    abstract protected function getFilename(int $userId): string;
 
     /**
      * @return string
      */
-    abstract protected function getTemplate() : string;
+    abstract protected function getTemplate(): string;
 }

@@ -252,6 +252,9 @@ MSG;
         ;
     }
 
+    /**
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
     public function testDestroy_Correct()
     {
         $filenameForRemove = 'short_0.pdf';
@@ -286,6 +289,10 @@ MSG;
         ;
     }
 
+    /**
+     * @param string $targetFilename
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
     private function copyDummyFileToBaseStorageFolder(string $targetFilename)
     {
         $dummyFileContent = Storage::disk('dummy-files')
@@ -294,6 +301,9 @@ MSG;
         Storage::put($targetFilename, $dummyFileContent);
     }
 
+    /**
+     * @return string
+     */
     private function getModel(): string
     {
         return Pdf::class;

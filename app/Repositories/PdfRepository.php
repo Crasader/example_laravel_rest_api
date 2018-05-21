@@ -9,7 +9,7 @@ class PdfRepository extends AbstractRepository
     /**
      * @return string
      */
-    public function model() : string
+    public function model(): string
     {
         return Pdf::class;
     }

@@ -32,6 +32,7 @@ class PdfController extends AbstractApiController
      * @param  PdfFactory $pdfFactory
      * @param  PdfDataGetter $pdfDataGetter
      * @return JsonResponse
+     * @throws \Prettus\Validator\Exceptions\ValidatorException
      */
     public function storeAllTypes(
         PdfFactory $pdfFactory,
@@ -68,6 +69,7 @@ class PdfController extends AbstractApiController
      *
      * @param  int $id
      * @return JsonResponse
+     * @throws \Prettus\Repository\Exceptions\RepositoryException
      */
     public function show(int $id): JsonResponse
     {
@@ -86,6 +88,8 @@ class PdfController extends AbstractApiController
      * @param PdfFactory $pdfFactory
      * @param  int $id
      * @return JsonResponse
+     * @throws \Prettus\Repository\Exceptions\RepositoryException
+     * @throws \Prettus\Validator\Exceptions\ValidatorException
      */
     public function update(PdfFactory $pdfFactory, int $id): JsonResponse
     {
@@ -123,6 +127,7 @@ class PdfController extends AbstractApiController
      *
      * @param  int $id
      * @return JsonResponse
+     * @throws \Prettus\Repository\Exceptions\RepositoryException
      */
     public function destroy(int $id): JsonResponse
     {
@@ -141,7 +146,7 @@ class PdfController extends AbstractApiController
     /**
      * @return string
      */
-    protected function getRepository() : string
+    protected function getRepository(): string
     {
         return PdfRepository::class;
     }

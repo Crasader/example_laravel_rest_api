@@ -6,14 +6,14 @@ use Closure;
 
 class Cors
 {
-    const ACCESS_CONTROL_PREFIX = 'Access-Control-Allow-';
-    const ALLOW_ORIGIN_HEADER = self::ACCESS_CONTROL_PREFIX . 'Origin';
-    const ALLOW_METHODS_HEADER = self::ACCESS_CONTROL_PREFIX . 'Methods';
-    const ALLOW_HEADERS_HEADER = self::ACCESS_CONTROL_PREFIX . 'Headers';
-    const ALLOWED_METHODS = 'OPTIONS, GET, PUT, POST, DELETE';
-    const ALLOWED_HEADERS = 'Accept, Authorization, Content-Type';
-    const SERVER_HOST_INDEX = 'HTTP_HOST';
-    const ORIGIN_HOST_INDEX = 'HTTP_ORIGIN';
+    private const ACCESS_CONTROL_PREFIX = 'Access-Control-Allow-';
+    private const ALLOW_ORIGIN_HEADER = self::ACCESS_CONTROL_PREFIX . 'Origin';
+    private const ALLOW_METHODS_HEADER = self::ACCESS_CONTROL_PREFIX . 'Methods';
+    private const ALLOW_HEADERS_HEADER = self::ACCESS_CONTROL_PREFIX . 'Headers';
+    private const ALLOWED_METHODS = 'OPTIONS, GET, PUT, POST, DELETE';
+    private const ALLOWED_HEADERS = 'Accept, Authorization, Content-Type';
+    private const SERVER_HOST_INDEX = 'HTTP_HOST';
+    private const ORIGIN_HOST_INDEX = 'HTTP_ORIGIN';
 
     /**
      * Handle an incoming request.

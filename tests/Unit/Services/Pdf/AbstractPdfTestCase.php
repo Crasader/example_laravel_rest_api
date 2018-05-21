@@ -3,6 +3,7 @@
 namespace Tests\Unit\Services\Pdf;
 
 use App\Constants\PdfTypes;
+use App\Services\Pdf\AbstractPdf;
 use Tests\TestCase;
 use App\Wrappers\PdfRenderer;
 use App\Repositories\PdfRepository;
@@ -15,6 +16,9 @@ abstract class AbstractPdfTestCase extends TestCase
     private const USER_NAME = 'John Doe';
     private const USER_EMAIL = 'john.doe@email.com';
 
+    /**
+     * @var AbstractPdf
+     */
     protected $pdf;
 
     public function setUp()
@@ -38,6 +42,9 @@ abstract class AbstractPdfTestCase extends TestCase
         $this->assertEquals($expectedResponse, $response);
     }
 
+    /**
+     * @throws \Prettus\Validator\Exceptions\ValidatorException
+     */
     public function testCreate_Correct()
     {
         Storage::shouldReceive('put')
@@ -56,12 +63,34 @@ abstract class AbstractPdfTestCase extends TestCase
         $this->assertEquals($excepectedResponse, $response);
     }
 
+    /**
+     * @return string
+     */
     abstract protected function getFilename(): string;
+
+    /**
+     * @return string
+     */
     abstract protected function getTemplate(): string;
+
+    /**
+     * @return PdfData
+     */
     abstract protected function getPdfData(): PdfData;
+
+    /**
+     * @return string
+     */
     abstract protected function getPdfClass(): string;
+
+    /**
+     * @return int
+     */
     abstract protected function getPdfType(): int;
 
+    /**
+     * @return PdfData[]
+     */
     protected function getPdfDataArray()
     {
         $shortPdfData = new PdfData;
@@ -88,6 +117,9 @@ abstract class AbstractPdfTestCase extends TestCase
         return $pdfDataArray;
     }
 
+    /**
+     * @return \Mockery\MockInterface
+     */
     protected function mockPdfRenderer()
     {
         $pdfMockedClass = \Mockery::mock(\Barryvdh\DomPDF\PDF::class);
@@ -101,6 +133,9 @@ abstract class AbstractPdfTestCase extends TestCase
         return $mockedClass;
     }
 
+    /**
+     * @return \Mockery\MockInterface
+     */
     protected function mockPdfRepository()
     {
         $attributes = [
@@ -120,6 +155,10 @@ abstract class AbstractPdfTestCase extends TestCase
         return $mockedClass;
     }
 
+    /**
+     * @param string $filename
+     * @return string
+     */
     private function getStorageUrl(string $filename): string
     {
         return sprintf('%s/%s', config('filesystems.disks.public.url'), $filename);
