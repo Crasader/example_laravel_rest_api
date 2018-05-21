@@ -1,4 +1,4 @@
-# Laravel REST API example
+# Laravel RESTful API example
 This example is an application for creating user's PDFs. There are three test types of PDFs in the system:
 
   - Short
