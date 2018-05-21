@@ -1,11 +1,11 @@
 # Laravel RESTful API example
-This example is an application for creating user's PDFs. There are three test types of PDFs in the system:
+This example is an application for creating user's PDFs. There are three test types of PDF in the system:
 
   - Short
   - Full
   - Advanced
  
-The application provides REST API for manipulating PDF resource. You can get all three types list of user's PDFs, create PDFs (render a PDF from [Blade](https://laravel.com/docs/5.6/blade) template using [Dompdf](https://github.com/dompdf/dompdf) package and save neccessary information to the database), get/update/delete a PDF by the requested id. The app uses [jwt-auth](https://github.com/tymondesigns/jwt-auth) package for provide user authentication.
+The application provides REST API for manipulating PDF resource. You can get all three types list of user's PDFs, create PDFs (render a PDF from [Blade](https://laravel.com/docs/5.6/blade) template using [Dompdf](https://github.com/dompdf/dompdf) package and save neccessary information to the database), get/update/delete a PDF by the requested id. The app uses [jwt-auth](https://github.com/tymondesigns/jwt-auth) package for providing user authentication.
 
 This repository is connected to [Vue.js PDF Manager](https://github.com/akozyr/example_vue_client).
 
